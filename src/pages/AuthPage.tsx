@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ThemeToggle } from '../components/molecules/ThemeToggle';
 import { BrandLogo } from '../components/atoms/BrandLogo';
+import userAvatar from '../assets/user-avatar.jpg';
 
 export interface AuthPageProps {
   onNavigateToCourses?: () => void;
@@ -103,6 +104,20 @@ export const AuthPage: React.FC<AuthPageProps> = ({
             >
               ?
             </button>
+          </div>
+
+          {/* Profile Image (Same as Course Catalog) */}
+          <div className="flex items-center pl-1 cursor-pointer" title="Creator Profile">
+            <img
+              alt="Profile"
+              className="w-9 h-9 rounded-full object-cover border-2 border-background-dark shadow-[2px_2px_0px_#0F172A]"
+              src="https://lh3.googleusercontent.com/aida/AEtjO1XGof4N_6Ilm5rNH6DoNos8mnGnG1-uS1v2xS9gL4TrT2wdr24YeSIORA9xI502dEc28frPRf7NQ_L0dYda4MKS8BWuCx-zdjj1s0eTMgEv2Vq9t5o4Ls_cG0UuKJY8lWbsguJK7wIAQAVu-W1pTruHDCUPY2yFp0CGznsEFi2kkoy4rrZLqMxYoNQ6Im5wb9z0mAwMb0UXQMPnkvxHmhPxWzwDtnj_FksmNfIhWcSYOsX_LpfnKDq0Ghw"
+              onError={(e) => {
+                const target = e.currentTarget;
+                target.onerror = null;
+                target.src = userAvatar;
+              }}
+            />
           </div>
         </div>
       </header>

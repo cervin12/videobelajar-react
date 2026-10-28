@@ -26,9 +26,15 @@ import { RevealOnScroll } from '../components/atoms';
 
 export interface CoursePageProps {
   onNavigateToAuth?: () => void;
+  onNavigateToDashboard?: () => void;
+  onNavigateToNotes?: () => void;
 }
 
-export const CoursePage: React.FC<CoursePageProps> = ({ onNavigateToAuth }) => {
+export const CoursePage: React.FC<CoursePageProps> = ({
+  onNavigateToAuth,
+  onNavigateToDashboard,
+  onNavigateToNotes,
+}) => {
   // 1. Theme State
   const [isDark, setIsDark] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
@@ -157,6 +163,18 @@ export const CoursePage: React.FC<CoursePageProps> = ({ onNavigateToAuth }) => {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         onNavigateToAuth={onNavigateToAuth}
+        onNavigateToDashboard={onNavigateToDashboard}
+        onProfileClick={onNavigateToDashboard}
+        activeNav="courses"
+        onNavigate={(page) => {
+          if (page === 'dashboard' && onNavigateToDashboard) {
+            onNavigateToDashboard();
+          } else if (page === 'notes' && onNavigateToNotes) {
+            onNavigateToNotes();
+          } else if (page === 'auth' && onNavigateToAuth) {
+            onNavigateToAuth();
+          }
+        }}
       />
 
       {/* 2. Main Page Content */}

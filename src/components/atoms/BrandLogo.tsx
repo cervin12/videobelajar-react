@@ -4,7 +4,7 @@ export interface BrandLogoProps {
   onClick?: (e: React.MouseEvent) => void;
   href?: string;
   className?: string;
-  size?: 'sm' | 'md';
+  size?: 'sm' | 'md' | 'lg';
   showSubtitle?: boolean;
 }
 
@@ -16,41 +16,35 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   showSubtitle = true,
 }) => {
   const isSm = size === 'sm';
-
-  const badgeBoxClass = isSm
-    ? 'w-10 h-10 rounded-xl'
-    : 'w-11 h-11 rounded-xl';
-
-  const badgeTextClass = isSm ? 'text-xl' : 'text-2xl';
-  const titleTextClass = isSm ? 'text-xl' : 'text-2xl';
-  const subtitleTextClass = isSm ? 'text-[9px] -mt-0.5' : 'text-[10px] -mt-1';
+  const badgeSize = isSm ? 'w-9 h-9' : 'w-11 h-11';
+  const badgeText = isSm ? 'text-xl' : 'text-2xl';
+  const titleText = isSm ? 'text-xl' : 'text-2xl';
 
   const content = (
-    <>
-      {/* S! Icon Badge */}
+    <div className="flex items-center gap-2 group cursor-pointer select-none">
       <div
-        className={`${badgeBoxClass} bg-[#A3E635] custom-doodle-border shadow-pop flex items-center justify-center transform -rotate-3 group-hover:rotate-0 transition-transform shrink-0`}
+        className={`${badgeSize} bg-primary rounded-xl custom-doodle-border shadow-pop flex items-center justify-center transform -rotate-3 group-hover:rotate-0 transition-transform shrink-0`}
       >
-        <span className={`${badgeTextClass} font-black font-doodle text-neutral-900 leading-none`}>
+        <span className={`${badgeText} font-black font-doodle text-neutral-900 leading-none`}>
           S!
         </span>
       </div>
-
-      {/* Brand Text */}
       <div className="flex flex-col text-left">
-        <span className={`font-doodle ${titleTextClass} font-bold tracking-tight text-neutral-900 dark:text-white flex items-center gap-0.5 leading-none`}>
-          Skill<span className="text-pop-purple dark:text-[#A3E635]">Pop.</span>
+        <span
+          className={`font-doodle ${titleText} font-bold tracking-tight text-neutral-900 dark:text-white flex items-center gap-0.5 leading-tight`}
+        >
+          Skill<span className="text-pop-purple dark:text-pop-lime">Pop.</span>
         </span>
         {showSubtitle && (
-          <span className={`${subtitleTextClass} uppercase font-bold tracking-widest mt-0.5 text-neutral-500 dark:text-neutral-400`}>
+          <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-500 dark:text-neutral-400 -mt-0.5">
             Play • Learn • Ship
           </span>
         )}
       </div>
-    </>
+    </div>
   );
 
-  const containerClasses = `flex items-center gap-2 group cursor-pointer select-none ${className}`;
+  const containerClasses = `inline-flex items-center ${className}`.trim();
 
   if (href) {
     return (
@@ -66,3 +60,5 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
     </div>
   );
 };
+
+export default BrandLogo;

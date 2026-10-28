@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html class="" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="web_standard" name="shell-type">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&amp;display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet">
+    <style>
+        @layer base {
+
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                overscroll-behavior: none;
+            }
+
+            main>:first-child {
+                margin-top: 0 !important;
+            }
+
+            main>:last-child {
+                margin-bottom: 0 !important;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        .neo-border {
+            border: 2.5px solid #0F172A;
+        }
+
+        .neo-border-3 {
+            border: 3px solid #0F172A;
+        }
+
+        .neo-shadow {
+            box-shadow: 4px 4px 0px #0F172A;
+        }
+
+        .neo-shadow-sm {
+            box-shadow: 2.5px 2.5px 0px #0F172A;
+        }
+
+        .neo-shadow-lg {
+            box-shadow: 6px 6px 0px #0F172A;
+        }
+
+        .neo-shadow-lime {
+            box-shadow: 4px 4px 0px #84CC16;
+        }
+
+        .neo-shadow-pink {
+            box-shadow: 4px 4px 0px #EC4899;
+        }
+
+        .neo-shadow-yellow {
+            box-shadow: 4px 4px 0px #EAB308;
+        }
+
+        .neo-shadow-purple {
+            box-shadow: 4px 4px 0px #8B5CF6;
+        }
+
+        .dark .neo-border {
+            border: 2.5px solid #38BDF8;
+        }
+
+        .dark .neo-border-3 {
+            border: 3px solid #38BDF8;
+        }
+
+        .dark .neo-shadow {
+            box-shadow: 4px 4px 0px #38BDF8;
+        }
+
+        .dark .neo-shadow-sm {
+            box-shadow: 2.5px 2.5px 0px #38BDF8;
+        }
+
+        .dark .neo-shadow-lg {
+            box-shadow: 6px 6px 0px #A3E635;
+        }
+
+        .pattern-dots {
+            background-image: radial-gradient(#CBD5E1 1.5px, transparent 1.5px);
+            background-size: 16px 16px;
+        }
+
+        .dark .pattern-dots {
+            background-image: radial-gradient(#1E293B 1.5px, transparent 1.5px);
+            background-size: 16px 16px;
+        }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+        id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary-fixed": "#102000", "on-surface-variant": "#424936", "surface-container-highest": "#dae2fd", "on-primary": "#ffffff", "on-tertiary-fixed-variant": "#574500", "primary-fixed-dim": "#91db2a", "error-container": "#ffdad6", "coral-red": "#EF4444", "on-tertiary": "#ffffff", "on-error-container": "#93000a", "surface-container": "#eaedff", "surface-tint": "#416900", "outline-variant": "#c1cab0", "surface-container-lowest": "#ffffff", "on-background": "#131b2e", "surface-dim": "#d2d9f4", "dot-grid": "#E2E8F0", "on-tertiary-container": "#594700", "lime-bright": "#A3E635", "on-secondary": "#ffffff", "cyber-yellow-deep": "#EAB308", "surface-variant": "#dae2fd", "inverse-surface": "#0F172A", "primary-container": "#84cc16", "tertiary-fixed-dim": "#eec200", "inverse-primary": "#91db2a", "on-surface": "#0F172A", "on-secondary-fixed-variant": "#3323cc", "outline": "#727a64", "primary-fixed": "#acf847", "secondary-fixed-dim": "#c3c0ff", "on-error": "#ffffff", "tertiary-fixed": "#ffe083", "indigo-vibrant": "#7C3AED", "tertiary-container": "#deb400", "canvas-slate": "#FFFDF8", "tertiary": "#735c00", "secondary-fixed": "#e2dfff", "surface-container-high": "#e2e7ff", "surface-container-low": "#f2f3ff", "on-primary-container": "#315200", "on-secondary-container": "#fffbff", "on-tertiary-fixed": "#231b00", "on-secondary-fixed": "#0f0069", "on-primary-fixed-variant": "#304f00", "secondary-container": "#645efb", "error": "#ba1a1a", "surface-bright": "#faf8ff", "inverse-on-surface": "#eef0ff", "primary": "#416900", "secondary": "#4b41e1", "surface": "#FFFDF8", "background": "#FFFDF8" }, "borderRadius": { "DEFAULT": "0.375rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px" }, "spacing": { "gutter-mobile": "1rem", "space-md": "1rem", "space-xl": "2.5rem", "gutter": "1.5rem", "margin-mobile": "1rem", "space-lg": "1.5rem", "space-xs": "0.25rem", "margin": "2rem", "space-sm": "0.5rem" }, "fontFamily": { "headline-md": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "title-md": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "display-lg": ["Plus Jakarta Sans"], "display-lg-mobile": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"] }, "fontSize": { "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "800" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "800" }], "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "800" }], "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "600" }], "title-md": ["18px", { "lineHeight": "26px", "fontWeight": "800" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "900" }], "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.03em", "fontWeight": "900" }], "display-lg-mobile": ["34px", { "lineHeight": "42px", "letterSpacing": "-0.02em", "fontWeight": "900" }], "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "600" }], "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "900" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "800" }], "headline-lg-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.015em", "fontWeight": "900" }] } } } };</script>
+</head>
+
+<body
+    class="bg-[#FFFDF8] dark:bg-[#0B0F19] font-body-md text-background-dark dark:text-white antialiased selection:bg-[#FDE047] selection:text-background-dark transition-colors duration-200 pattern-dots">
+    <header
+        class="fixed top-0 left-0 right-0 w-full z-50 bg-[#FFFDF8]/95 dark:bg-[#0B0F19]/95 backdrop-blur-md border-b-2 border-background-dark dark:border-[#38BDF8] shadow-[0_4px_0px_#0F172A] dark:shadow-[0_4px_0px_#38BDF8] transition-colors">
+        <div class="h-20 w-full px-gutter flex items-center justify-between gap-space-md">
+            <div class="flex items-center gap-space-lg"><a class="flex items-center gap-2 group" href="#"><span
+                        class="font-black text-2xl text-background-dark dark:text-white tracking-tight flex items-center gap-1.5">SkillPop<span
+                            class="inline-block px-1.5 py-0.5 text-xs font-black bg-[#A3E635] text-background-dark rounded border-2 border-background-dark -rotate-3">PRO</span></span></a>
+                <nav id="headerMainNav" class="hidden xl:flex items-center gap-1 p-1 bg-[#FFFDF8] dark:bg-[#131A2A] rounded-lg neo-border"
+                    data-active-classes="bg-[#FDE047] text-background-dark font-extrabold rounded-md">
+                    <a aria-current="page"
+                        class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1 transition-all bg-[#FDE047] text-background-dark font-black text-xs rounded-md border-2 border-background-dark shadow-[1.5px_1.5px_0px_#0F172A] cursor-pointer select-none"
+                        data-path="courses" href="#"><span class="leading-none">Courses</span><span
+                            class="leading-none">🚀</span>
+                    </a>
+                    <a class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1 text-background-dark dark:text-slate-200 font-bold text-xs hover:bg-[#A3E635] hover:text-background-dark hover:border-2 hover:border-background-dark rounded-md transition-all cursor-pointer select-none"
+                        data-path="challenges" href="#"><span class="leading-none">Challenges</span><span
+                            class="leading-none">🔥</span>
+                    </a>
+                    <a class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1 text-background-dark dark:text-slate-200 font-bold text-xs hover:bg-[#F472B6] hover:text-background-dark hover:border-2 hover:border-background-dark rounded-md transition-all cursor-pointer select-none"
+                        data-path="community" href="#"><span class="leading-none">Community</span><span
+                            class="leading-none">✨</span>
+                    </a>
+                    <a class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1 text-background-dark dark:text-slate-200 font-bold text-xs hover:bg-[#38BDF8] hover:text-background-dark hover:border-2 hover:border-background-dark rounded-md transition-all cursor-pointer select-none"
+                        data-path="mentors" href="#"><span class="leading-none">Mentors</span><span
+                            class="leading-none">👾</span>
+                    </a>
+                </nav>
+            </div>
+            <div class="flex items-center gap-space-md">
+                <div
+                    class="hidden md:flex items-center gap-space-sm bg-white dark:bg-[#131a2a] px-space-md py-2 rounded-xl text-background-dark dark:text-slate-200 neo-border neo-shadow-sm">
+                    <span class="material-symbols-outlined text-lg leading-none font-bold">search</span>
+                    <input type="text" id="courseSearch"
+                        class="font-body-md text-body-md focus:border-none focus:outline-none focus:ring-0 bg-auto pr-space-md select-none text-slate-500 dark:text-slate-400 dark:bg-background-dark"
+                        placeholder="Search course ..."></input><kbd
+                        class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-[#FDE047] text-background-dark font-extrabold border border-background-dark shadow-[1px_1px_0px_#0F172A]">⌘K</kbd>
+                </div>
+                <div aria-label="Theme Toggle"
+                    class="hidden sm:flex items-center bg-[#F1F5F9] dark:bg-[#131a2a] p-1 rounded-full neo-border neo-shadow-sm cursor-pointer"
+                    id="headerThemeToggleGroup" role="group"><button
+                        class="flex items-center justify-center w-7 h-7 rounded-full bg-[#FDE047] text-background-dark border border-background-dark shadow-sm transition-all"
+                        id="lightModeBtn" title="Light Mode" type="button"><span
+                            class="material-symbols-outlined text-sm leading-none"
+                            style="font-variation-settings: 'FILL' 1;">light_mode</span></button><button
+                        class="flex items-center justify-center w-7 h-7 rounded-full text-slate-600 hover:text-background-dark transition-all"
+                        id="darkModeBtn" title="Dark Mode" type="button"><span
+                            class="material-symbols-outlined text-sm leading-none"
+                            style="font-variation-settings: 'FILL' 1;">dark_mode</span></button></div><button
+                    aria-label="Notifications"
+                    class="relative p-2 rounded-xl bg-white dark:bg-[#131a2a] neo-border neo-shadow-sm hover:bg-[#FDE047] transition-colors"
+                    type="button"><span class="material-symbols-outlined text-xl leading-none">notifications</span><span
+                        class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#EF4444] border-2 border-background-dark"></span></button><a
+                    class="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-[#A3E635] text-background-dark font-black text-sm uppercase tracking-wide neo-border neo-shadow hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_#0F172A] active:translate-y-0 active:shadow-[2px_2px_0px_#0F172A] transition-all"
+                    data-path="pricing" href="#">Go Pro ⚡</a>
+                <div class="flex items-center pl-1 cursor-pointer"><img alt="Profile"
+                        class="w-9 h-9 rounded-full object-cover border-2 border-background-dark shadow-[2px_2px_0px_#0F172A]"
+                        src="https://lh3.googleusercontent.com/aida/AEtjO1XGof4N_6Ilm5rNH6DoNos8mnGnG1-uS1v2xS9gL4TrT2wdr24YeSIORA9xI502dEc28frPRf7NQ_L0dYda4MKS8BWuCx-zdjj1s0eTMgEv2Vq9t5o4Ls_cG0UuKJY8lWbsguJK7wIAQAVu-W1pTruHDCUPY2yFp0CGznsEFi2kkoy4rrZLqMxYoNQ6Im5wb9z0mAwMb0UXQMPnkvxHmhPxWzwDtnj_FksmNfIhWcSYOsX_LpfnKDq0Ghw"
+                        onerror="this.onerror=null; this.src='/src/assets/user-avatar.jpg';">
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="w-full pt-20 bg-[#FFFDF8] dark:bg-[#090D16] min-h-[calc(100vh-80px)] transition-colors">
+        <div class="flex flex-col w-full">
+            <div class="w-full relative px-gutter py-space-lg md:py-space-xl max-w-340 mx-auto">
+                <!-- Top Announcement Ticker - Playful Sticker Banner -->
+                <div
+                    class="mb-space-md flex flex-wrap items-center justify-between gap-space-sm p-3 bg-[#FEF08A] dark:bg-[#1E293B] neo-border-3 neo-shadow rounded-2xl transition-colors">
+                    <div class="flex items-center gap-space-sm">
+                        <span
+                            class="flex items-center justify-center w-8 h-8 rounded-xl bg-[#A3E635] text-background-dark border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] -rotate-6">
+                            <span class="material-symbols-outlined text-lg leading-none"
+                                style="font-variation-settings: 'FILL' 1;">bolt</span>
+                        </span>
+                        <span
+                            class="font-black text-xs uppercase tracking-wider px-2 py-0.5 rounded-md bg-background-dark text-[#FDE047]">SPRING
+                            SPRINT JAM '25</span>
+                        <span class="font-bold text-sm text-background-dark dark:text-slate-200">💥 Double XP enabled on all
+                            Sakuga &amp; Shader masterclasses this week!</span>
+                    </div>
+                    <div class="flex items-center gap-space-sm">
+                        <span
+                            class="font-black text-xs uppercase px-3 py-1 rounded-full bg-[#EC4899] text-white border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] animate-pulse">🔥
+                            LIVE JAM ACTIVE</span>
+                        <span
+                            class="hidden md:inline font-bold text-xs bg-white text-background-dark px-2.5 py-1 rounded-full border-2 border-background-dark">Ends
+                            in 48h ⏳</span>
+                    </div>
+                </div>
+                <!-- Hero Header Block - Arcade Playground -->
+                <div
+                    class="relative rounded-2xl bg-[#E0F2FE] dark:bg-[#111A2E] neo-border-3 neo-shadow-lg p-space-lg md:p-space-xl mb-space-xl transition-all">
+                    <!-- Floating Doodles & Stickers Background -->
+                    <div class="absolute -top-4 right-10 hidden md:block rotate-12 z-20">
+                        <div
+                            class="px-4 py-2 bg-pop-pink text-white font-black text-sm uppercase rounded-xl border-2 border-background-dark shadow-[3px_3px_0px_#0F172A]">
+                            🎨 100% HANDS-ON</div>
+                    </div>
+                    <div class="absolute bottom-6 right-8 hidden lg:block -rotate-6 z-0">
+                        <div
+                            class="px-4 py-2 bg-[#FDE047] text-background-dark font-black text-sm uppercase rounded-xl border-2 border-background-dark shadow-[3px_3px_0px_#0F172A]">
+                            👾 ZERO BORING LECTURES</div>
+                    </div>
+                    <div class="relative z-10 max-w-4xl">
+                        <div class="flex flex-wrap items-center gap-2 mb-3">
+                            <span
+                                class="font-black text-xs px-3 py-1 rounded-full bg-[#A3E635] text-background-dark border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] uppercase tracking-wider">CREATIVE
+                                TECH CURRICULUM</span>
+                            <span
+                                class="font-black text-xs px-3 py-1 rounded-full bg-white dark:bg-[#1E293B] text-background-dark dark:text-white border-2 border-background-dark shadow-[2px_2px_0px_#0F172A]">⚡
+                                V 4.2 UPDATED</span>
+                            <span
+                                class="font-black text-xs px-3 py-1 rounded-full bg-[#F472B6] text-white border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] rotate-2">⭐
+                                TOP RATED 2025</span>
+                        </div>
+                        <h1
+                            class="font-black text-3xl sm:text-5xl lg:text-6xl text-background-dark dark:text-white tracking-tight mb-4 leading-tight">
+                            Level Up Your Creative &amp; Tech Superpowers <span
+                                class="inline-block transform hover:rotate-12 transition-transform cursor-pointer">🚀✨</span>
+                        </h1>
+                        <p
+                            class="font-bold text-base sm:text-lg text-slate-700 dark:text-slate-300 max-w-2xl mb-space-lg">
+                            Conquer 2D/3D Animation, Motion Graphics, Shaders, Generative AI, and Indie Game Dev with
+                            battle-tested studio directors and interactive sandboxes!
+                        </p>
+                        <!-- Live Quick Stats Badges (Chunky Neo-Pop Tiles) -->
+                        <div class="flex flex-wrap items-center gap-3">
+                            <div
+                                class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-[#182235] neo-border neo-shadow-sm transform hover:-translate-y-1 transition-transform">
+                                <span
+                                    class="flex items-center justify-center w-7 h-7 rounded-lg bg-[#A3E635] border-2 border-background-dark">
+                                    <span class="material-symbols-outlined text-base leading-none text-background-dark"
+                                        style="font-variation-settings: 'FILL' 1;">play_circle</span>
+                                </span>
+                                <span class="font-black text-sm text-background-dark dark:text-white">85+ Production
+                                    Courses</span>
+                            </div>
+                            <div
+                                class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-[#182235] neo-border neo-shadow-sm transform hover:-translate-y-1 transition-transform">
+                                <span
+                                    class="flex items-center justify-center w-7 h-7 rounded-lg bg-[#38BDF8] border-2 border-background-dark">
+                                    <span class="material-symbols-outlined text-base leading-none text-background-dark"
+                                        style="font-variation-settings: 'FILL' 1;">forum</span>
+                                </span>
+                                <span class="font-black text-sm text-background-dark dark:text-white">24/7 Discord Jam
+                                    Rooms</span>
+                            </div>
+                            <div
+                                class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-[#182235] neo-border neo-shadow-sm transform hover:-translate-y-1 transition-transform">
+                                <span
+                                    class="flex items-center justify-center w-7 h-7 rounded-lg bg-[#FDE047] border-2 border-background-dark">
+                                    <span class="material-symbols-outlined text-base leading-none text-background-dark"
+                                        style="font-variation-settings: 'FILL' 1;">video_camera_front</span>
+                                </span>
+                                <span class="font-black text-sm text-background-dark dark:text-white">1-on-1 Loom Mentor
+                                    Feedback</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Decorative Neo-Pop Geometric Vector -->
+                    <div class="absolute right-6 top-8 hidden lg:block opacity-70 pointer-events-none">
+                        <div class="relative w-44 h-44 flex items-center justify-center">
+                            <div
+                                class="absolute inset-0 bg-[#A3E635] rounded-full border-4 border-background-dark opacity-20">
+                            </div>
+                            <div
+                                class="w-32 h-32 bg-[#FDE047] rounded-3xl border-4 border-background-dark rotate-12 flex items-center justify-center neo-shadow">
+                                <span class="text-5xl">🎨</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Search & Filter Dock - Retro Funky Control Bar -->
+                <div
+                    class="p-space-md md:p-space-lg bg-[#FFFDF8] dark:bg-[#111726] neo-border-3 neo-shadow rounded-2xl mb-space-lg transition-colors">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-space-md items-center">
+                        <!-- Search Input -->
+                        <div class="md:col-span-5 relative">
+                            <span
+                                class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-background-dark dark:text-slate-300 text-xl font-bold">search</span>
+                            <input
+                                class="w-full h-12 pl-11 pr-4 bg-white dark:bg-[#182235] neo-border rounded-xl text-background-dark dark:text-white font-bold text-sm placeholder:text-slate-500 focus:outline-none focus:bg-[#FEF08A]/30 focus:shadow-[3px_3px_0px_#0F172A] transition-all"
+                                id="courseSearch" placeholder="Search by concept, style, or mentor..." type="text">
+                        </div>
+                        <!-- Software Dropdown -->
+                        <div class="md:col-span-3">
+                            <div class="relative">
+                                <select
+                                    class="w-full h-12 px-3.5 bg-white dark:bg-[#182235] neo-border rounded-xl text-background-dark dark:text-white font-bold text-sm appearance-none cursor-pointer focus:outline-none focus:shadow-[3px_3px_0px_#0F172A]">
+                                    <option value="">🛠️ All Creative Tools</option>
+                                    <option value="blender">Blender 4.x</option>
+                                    <option value="after-effects">Adobe After Effects</option>
+                                    <option value="threejs">Three.js / WebGL</option>
+                                    <option value="godot">Godot 4 Engine</option>
+                                    <option value="tvpaint">Toon Boom / TVPaint</option>
+                                    <option value="spline">Spline 3D</option>
+                                    <option value="figma">Figma Motion</option>
+                                </select>
+                                <span
+                                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-background-dark dark:text-slate-300 pointer-events-none font-bold">expand_more</span>
+                            </div>
+                        </div>
+                        <!-- Experience Level -->
+                        <div class="md:col-span-2">
+                            <div class="relative">
+                                <select
+                                    class="w-full h-12 px-3.5 bg-white dark:bg-[#182235] neo-border rounded-xl text-background-dark dark:text-white font-bold text-sm appearance-none cursor-pointer focus:outline-none focus:shadow-[3px_3px_0px_#0F172A]">
+                                    <option value="">🎯 Any Level</option>
+                                    <option value="beginner">Beginner Friendly</option>
+                                    <option value="intermediate">Intermediate Core</option>
+                                    <option value="master">Studio Masterclass</option>
+                                </select>
+                                <span
+                                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-background-dark dark:text-slate-300 pointer-events-none font-bold">expand_more</span>
+                            </div>
+                        </div>
+                        <!-- Sort by -->
+                        <div class="md:col-span-2">
+                            <div class="relative">
+                                <select
+                                    class="w-full h-12 px-3.5 bg-white dark:bg-[#182235] neo-border rounded-xl text-background-dark dark:text-white font-bold text-sm appearance-none cursor-pointer focus:outline-none focus:shadow-[3px_3px_0px_#0F172A]">
+                                    <option value="trending">⚡ Trending Now</option>
+                                    <option value="rating">★ Highest Rated</option>
+                                    <option value="newest">✨ New Releases</option>
+                                    <option value="duration">⏱ Duration</option>
+                                </select>
+                                <span
+                                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-background-dark dark:text-slate-300 pointer-events-none font-bold">swap_vert</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Discipline Filter Pills - Fun Sticker Palette -->
+                    <div
+                        class="mt-space-md pt-space-md border-t-2 border-dashed border-[#CBD5E1] dark:border-slate-700 flex flex-wrap gap-2.5 items-center">
+                        <span
+                            class="font-black text-xs text-background-dark dark:text-slate-300 uppercase tracking-wider mr-1">Discipline:</span>
+                        <button
+                            class="discipline-pill px-3.5 py-1.5 rounded-xl font-black text-xs uppercase bg-[#A3E635] text-background-dark neo-border neo-shadow-sm hover:-translate-y-0.5 transition-transform"
+                            type="button">
+                            All Courses (86)
+                        </button>
+                        <button
+                            class="discipline-pill px-3.5 py-1.5 rounded-xl font-bold text-xs uppercase bg-white dark:bg-[#182235] text-background-dark dark:text-slate-200 neo-border hover:bg-[#FDE047] hover:text-background-dark hover:neo-shadow-sm transition-all"
+                            type="button">
+                            🎲 3D &amp; Blender (24)
+                        </button>
+                        <button
+                            class="discipline-pill px-3.5 py-1.5 rounded-xl font-bold text-xs uppercase bg-white dark:bg-[#182235] text-background-dark dark:text-slate-200 neo-border hover:bg-[#F472B6] hover:text-background-dark hover:neo-shadow-sm transition-all"
+                            type="button">
+                            🌸 2D &amp; Sakuga (16)
+                        </button>
+                        <button
+                            class="discipline-pill px-3.5 py-1.5 rounded-xl font-bold text-xs uppercase bg-white dark:bg-[#182235] text-background-dark dark:text-slate-200 neo-border hover:bg-pop-orange hover:text-background-dark hover:neo-shadow-sm transition-all"
+                            type="button">
+                            ⚡ Motion Design (19)
+                        </button>
+                        <button
+                            class="discipline-pill px-3.5 py-1.5 rounded-xl font-bold text-xs uppercase bg-white dark:bg-[#182235] text-background-dark dark:text-slate-200 neo-border hover:bg-[#38BDF8] hover:text-background-dark hover:neo-shadow-sm transition-all"
+                            type="button">
+                            💎 Creative Dev &amp; Shaders (11)
+                        </button>
+                        <button
+                            class="discipline-pill px-3.5 py-1.5 rounded-xl font-bold text-xs uppercase bg-white dark:bg-[#182235] text-background-dark dark:text-slate-200 neo-border hover:bg-[#C084FC] hover:text-background-dark hover:neo-shadow-sm transition-all"
+                            type="button">
+                            👾 Game Art &amp; Godot (8)
+                        </button>
+                        <button
+                            class="discipline-pill px-3.5 py-1.5 rounded-xl font-bold text-xs uppercase bg-white dark:bg-[#182235] text-background-dark dark:text-slate-200 neo-border hover:bg-[#34D399] hover:text-background-dark hover:neo-shadow-sm transition-all"
+                            type="button">
+                            🤖 Generative AI (5)
+                        </button>
+                        <button
+                            class="discipline-pill px-3.5 py-1.5 rounded-xl font-bold text-xs uppercase bg-white dark:bg-[#182235] text-background-dark dark:text-slate-200 neo-border hover:bg-[#FDE047] hover:text-background-dark hover:neo-shadow-sm transition-all"
+                            type="button">
+                            ✨ UI/UX &amp; Spline (7)
+                        </button>
+                    </div>
+                </div>
+                <!-- Featured Spotlight Banner - High Energy Neo-Pop Card -->
+                <div
+                    class="mb-space-xl p-space-md md:p-space-lg bg-[#FEF9C3] dark:bg-[#111726] neo-border-3 neo-shadow-lg rounded-2xl relative overflow-hidden transition-all">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-center">
+                        <!-- Spotlight Media with Neo Frame -->
+                        <div
+                            class="lg:col-span-6 relative rounded-xl overflow-hidden neo-border-3 neo-shadow group bg-black">
+                            <img class="w-full h-72 md:h-80 object-cover group-hover:scale-105 transition-transform duration-300"
+                                data-alt="A vivid cinematic anime frame of a dynamic female protagonist sprinting across glowing rooftop neon tiles during an explosive rainstorm in Tokyo, dramatic foreshortening, highly expressive hand-drawn sakuga animation lines, high key electric lime and vibrant purple lighting highlights, ultra detailed, cinematic widescreen."
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBp1NSEXrkzm_mDx05ftp_EvLWY_aTe2T0men_H8yIVAiWugCq0fI4o_EY1zwH5Cm-yi0NUqfexJ5yxeI_qVOGXZ4PLrs0g5TNcxo8ekFj7AED9th0avzghXM_TIeiQRsadlrolVKpAbueOyP7xK339jEUZ1DSFpXjuzJ5_FvL_azwxd-whk9HsCLSy3CEPri3B0DCLyE8N9XvhYIG-9mCxkOReWEQ_G1QwDR2Sik5vPGpepJwhypoz4A">
+                            <div class="absolute top-3 left-3 flex flex-wrap gap-2">
+                                <span
+                                    class="px-3 py-1 rounded-lg bg-pop-pink text-white font-black text-xs uppercase tracking-wide border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] -rotate-2">
+                                    ★ STAFF PICK OF THE WEEK
+                                </span>
+                                <span
+                                    class="px-2.5 py-1 rounded-lg bg-[#A3E635] text-background-dark font-black text-xs uppercase border-2 border-background-dark shadow-[2px_2px_0px_#0F172A]">
+                                    NEW COHORT
+                                </span>
+                            </div>
+                            <div
+                                class="absolute bottom-3 right-3 px-3 py-1.5 rounded-lg bg-background-dark text-white font-black text-xs flex items-center gap-1.5 border-2 border-white shadow-md">
+                                <span
+                                    class="material-symbols-outlined text-sm leading-none text-[#A3E635]">schedule</span>
+                                <span class="">12 Cohort Weeks</span>
+                            </div>
+                        </div>
+                        <!-- Spotlight Content -->
+                        <div class="lg:col-span-6 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center gap-2 mb-2 flex-wrap">
+                                    <span
+                                        class="px-3 py-1 rounded-md bg-[#F472B6] text-background-dark font-black text-xs border-2 border-background-dark shadow-[1.5px_1.5px_0px_#0F172A]">🌸
+                                        Sakuga &amp; Dynamic 2D</span>
+                                    <span
+                                        class="flex items-center bg-white dark:bg-[#1E293B] px-2.5 py-0.5 rounded-md border-2 border-background-dark text-background-dark dark:text-white font-black text-xs shadow-[1.5px_1.5px_0px_#0F172A]">
+                                        <span class="material-symbols-outlined text-sm leading-none text-[#EAB308] mr-1"
+                                            style="font-variation-settings: 'FILL' 1;">star</span>
+                                        4.95 (4,210 verified reviews)
+                                    </span>
+                                </div>
+                                <h2
+                                    class="font-black text-2xl sm:text-3xl md:text-4xl text-background-dark dark:text-white tracking-tight mb-space-sm leading-tight">
+                                    Action &amp; Run Cycles: Traditional 2D Sakuga Masterclass
+                                </h2>
+                                <p
+                                    class="font-bold text-sm sm:text-base text-slate-700 dark:text-slate-300 mb-space-md">
+                                    Master extreme perspective, smear frames, impact explosions, and fluid momentum
+                                    shifts with anime industry veteran Dikshant Sharma. Includes personal frame-by-frame
+                                    weekly Loom critiques.
+                                </p>
+                                <div class="flex flex-wrap items-center gap-space-sm mb-space-lg">
+                                    <div
+                                        class="flex items-center gap-2.5 pr-3 bg-white dark:bg-[#1E293B] p-2 rounded-xl border-2 border-background-dark shadow-[2px_2px_0px_#0F172A]">
+                                        <img class="w-10 h-10 rounded-full object-cover border-2 border-background-dark"
+                                            data-alt="Close up portrait photo of Dikshant Sharma, a friendly creative animator wearing studio headphones with warm studio lighting and colorful anime prints on the wall behind."
+                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZKa-pZII8c-gLivCyaWpErWfElNkxrPjwcktAD7uzO8eDA7zKovqzjVGnvpQcPwRK9ZXXz9ke449QdAavl0TrGzsEysbwHYy-iG4E0xhwbfX57piDtovsmabiGrjztRkEULUt1g8S1JHnkLlADZIWWeNfx5Ly577Pc0nBSDM2B3RfQpCEEOLk82H37Ei2l4OjQkbycmbYLrnw8MObOhtXqCx1MycmGk1r49WIszU2nXQV62b4TkARPA">
+                                        <div>
+                                            <div class="flex items-center gap-1">
+                                                <p
+                                                    class="font-black text-sm text-background-dark dark:text-white leading-tight">
+                                                    Dikshant Sharma</p>
+                                                <span class="material-symbols-outlined text-xs text-[#38BDF8]"
+                                                    style="font-variation-settings: 'FILL' 1;">verified</span>
+                                            </div>
+                                            <p class="font-bold text-xs text-slate-600 dark:text-slate-400">Lead
+                                                Keyframer @ MAPPA Alumni</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-1.5">
+                                        <span
+                                            class="font-black text-xs px-2.5 py-1.5 rounded-lg bg-white dark:bg-[#1E293B] text-background-dark dark:text-white border-2 border-background-dark">Toon
+                                            Boom</span>
+                                        <span
+                                            class="font-black text-xs px-2.5 py-1.5 rounded-lg bg-white dark:bg-[#1E293B] text-background-dark dark:text-white border-2 border-background-dark">TVPaint</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="flex flex-wrap items-center justify-between gap-space-md pt-3 border-t-2 border-dashed border-[#CBD5E1] dark:border-slate-700">
+                                <div class="flex flex-col">
+                                    <span
+                                        class="font-black text-xs text-slate-600 dark:text-slate-400 uppercase tracking-wider">Cohort
+                                        Starts Monday</span>
+                                    <span class="font-black text-2xl text-background-dark dark:text-white">Included with Pro
+                                        Pass <span class="font-bold text-sm text-slate-600 dark:text-slate-400">or $69
+                                            standalone</span></span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <button
+                                        class="px-4 py-3 rounded-xl bg-white dark:bg-[#1E293B] text-background-dark dark:text-white hover:bg-slate-100 font-black text-sm neo-border neo-shadow-sm transition-all flex items-center gap-1.5"
+                                        type="button">
+                                        <span class="material-symbols-outlined text-base">play_arrow</span>
+                                        Syllabus Preview
+                                    </button>
+                                    <button
+                                        class="px-6 py-3 rounded-xl bg-[#A3E635] text-background-dark hover:bg-primary-dark font-black text-sm neo-border neo-shadow hover:-translate-y-0.5 active:translate-y-0 active:shadow-[1px_1px_0px_#0F172A] transition-all flex items-center gap-1.5"
+                                        type="button">
+                                        <span class="">Enroll in Cohort</span>
+                                        <span class="material-symbols-outlined text-base font-bold">arrow_forward</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Section Header & Active Result Stats -->
+                <div class="flex flex-wrap items-center justify-between gap-space-md mb-space-md">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-black text-2xl sm:text-3xl text-background-dark dark:text-white">Core Masterclass
+                                Catalog</h3>
+                            <span
+                                class="px-2 py-0.5 text-xs font-black bg-[#FDE047] text-background-dark rounded border-2 border-background-dark rotate-2">POPULAR</span>
+                        </div>
+                        <p class="font-bold text-sm text-slate-600 dark:text-slate-400">86 active studio courses vetted
+                            for real-world creative technology jobs</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span
+                            class="font-black text-xs px-3 py-1.5 rounded-xl bg-white dark:bg-[#182235] text-background-dark dark:text-white neo-border neo-shadow-sm">Showing
+                            1–8 of 86</span>
+                        <div
+                            class="flex items-center bg-white dark:bg-[#131A2A] rounded-xl p-1 neo-border neo-shadow-sm">
+                            <button class="p-1.5 rounded-lg bg-[#FDE047] text-background-dark border border-background-dark"
+                                title="Grid View" type="button">
+                                <span class="material-symbols-outlined text-lg leading-none font-bold">grid_view</span>
+                            </button>
+                            <button class="p-1.5 rounded-lg text-slate-500 hover:text-background-dark dark:hover:text-white"
+                                title="List View" type="button">
+                                <span class="material-symbols-outlined text-lg leading-none font-bold">view_list</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- 8-Card Rich Course Grid - Neo-Pop Sticker Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-md md:gap-space-lg mb-space-xl">
+                    <!-- Card 1: 2D Sakuga (Pink Accent) -->
+                    <div
+                        class="flex flex-col justify-between bg-white dark:bg-[#111726] neo-border-3 neo-shadow rounded-2xl overflow-hidden hover:-translate-y-1 hover:shadow-[6px_6px_0px_#EC4899] transition-all group">
+                        <div>
+                            <div class="h-3 w-full bg-[#EC4899]"></div>
+                            <div
+                                class="relative h-48 overflow-hidden bg-slate-100 dark:bg-[#182235] border-b-2 border-background-dark">
+                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    data-alt="Dynamic 2D anime character performing an acrobatic sword slash with electric particles, deep purples, lime energy trails, sharp hand-drawn keyframes, action composition."
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJAMQNbHF5tuTyqW-lsuDpbXgJKOVYAF-XX2KJBh1sapcgBCLd1M2yH-s5b8l2OyN3Wrh3xDfsjax52dMug_oFmuMmI59cCjqxlMRGriWQ8Sm9I68PwDIEbaB7qm_bqJoV1UjN0lgRN2e63HiYaDO9fC50oc1cDBVbrkx-V_ZT7j5dSQXkOTbSNr9veCiAuLa3r0WGRiKqLhGGkpBGQ86fFuyajy-1bsuiG8sClAFdvNomPskzDtMbEg">
+                                <span
+                                    class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-md bg-[#EC4899] text-white font-black text-xs uppercase border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] -rotate-3">🌸
+                                    Sakuga</span>
+                                <span
+                                    class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-md bg-background-dark text-white font-black text-xs border border-white">18h
+                                    40m</span>
+                            </div>
+                            <div class="p-space-md">
+                                <div
+                                    class="flex items-center justify-between text-slate-600 dark:text-slate-400 mb-1.5">
+                                    <span
+                                        class="font-bold text-xs uppercase bg-[#FCE7F3] text-[#BE185D] px-2 py-0.5 rounded border border-[#BE185D]">Clip
+                                        Studio &amp; Toon Boom</span>
+                                    <span class="flex items-center font-black text-xs text-background-dark dark:text-white">
+                                        <span
+                                            class="material-symbols-outlined text-sm leading-none mr-0.5 text-[#EAB308]"
+                                            style="font-variation-settings: 'FILL' 1;">star</span> 4.90
+                                    </span>
+                                </div>
+                                <h4
+                                    class="font-black text-lg text-background-dark dark:text-white line-clamp-2 mb-2 group-hover:text-[#EC4899] transition-colors">
+                                    Dynamic Character Action &amp; Sakuga Animation
+                                </h4>
+                                <div class="flex items-center gap-2 mb-space-md">
+                                    <img class="w-7 h-7 rounded-full object-cover border-2 border-background-dark"
+                                        data-alt="Portrait avatar of Dikshant R, skilled animator with spectacles and smiling demeanor in bright digital artist room."
+                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcuwDQIZHmO6f-CVDnAlf9-9CW8QFGWHCb1kTzhuSBBpZJx3n9gQ391qLEipFxukvdp1SeKHx8Tj0wGq8ay5Z7BEvEp1nxrLZhRQ1qDiLkpImXn7F4AkxlkX_j5FWf9sHXhRpprFAikpfJRZd7ICKadOLxFXVIYDE6P05IRPRY6kCszcvkCgie3rhfUw36_jXTGu_mqqvQfGsAKlOApTDZmGvJcT8Dh6It4NHVHYA6cXxPEMkCJ-iDUQ">
+                                    <span class="font-bold text-xs text-slate-700 dark:text-slate-300 truncate">Dikshant
+                                        R. • Senior Keyframer</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-space-md pt-0">
+                            <div
+                                class="flex items-center justify-between bg-[#F8FAFC] dark:bg-[#182235] p-3 rounded-xl border-2 border-background-dark">
+                                <div>
+                                    <p class="font-bold text-[10px] text-slate-500 uppercase tracking-wider">Single
+                                        Purchase</p>
+                                    <p class="font-black text-lg text-background-dark dark:text-white">$39 <span
+                                            class="text-xs font-bold text-slate-500">/ Pro Pass</span></p>
+                                </div>
+                                <button
+                                    class="px-4 py-2 rounded-lg bg-[#A3E635] text-background-dark font-black text-xs uppercase border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] hover:bg-primary-dark active:translate-y-0.5 transition-all"
+                                    type="button">
+                                    Enroll ⚡
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 2: Blender Isometric (Lime Accent) -->
+                    <div
+                        class="flex flex-col justify-between bg-white dark:bg-[#111726] neo-border-3 neo-shadow rounded-2xl overflow-hidden hover:-translate-y-1 hover:shadow-[6px_6px_0px_#84CC16] transition-all group">
+                        <div>
+                            <div class="h-3 w-full bg-primary-dark"></div>
+                            <div
+                                class="relative h-48 overflow-hidden bg-slate-100 dark:bg-[#182235] border-b-2 border-background-dark">
+                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    data-alt="Cozy miniature 3D isometric coffee shop and plant greenhouse bathed in soft warm golden hour volumetric lighting with cute stylized textures created in Blender 4.0, ultra clean render."
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCm71kZNWTznFkDaApQYnZwY4lQlUXQNO7BDizRiJRId2BK6SMTsVW3u-5UHZwZCJSmkj7oS7MjumwuUGx7qN1yf2aScJBNTF0ZNtoaYE9M5VTWpTt_DvZkthgcCcsNAeweNH1XFagK4RIbDsVP4TSGCuhMfRuradl5bSjVTlccjCXLDy-nfpkY2yNJ1gKi4Cqpo6u4lxrlVuIzq2cV82UsHDYRRRDJ7KvEJMdG1a2XWkLDZ1IAEwHKA">
+                                <span
+                                    class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-md bg-[#A3E635] text-background-dark font-black text-xs uppercase border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] rotate-2">🎲
+                                    3D Modeling</span>
+                                <span
+                                    class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-md bg-background-dark text-white font-black text-xs border border-white">24h
+                                    10m</span>
+                            </div>
+                            <div class="p-space-md">
+                                <div
+                                    class="flex items-center justify-between text-slate-600 dark:text-slate-400 mb-1.5">
+                                    <span
+                                        class="font-bold text-xs uppercase bg-[#ECFCCB] text-[#4D7C0F] px-2 py-0.5 rounded border border-[#4D7C0F]">Blender
+                                        4.0 &amp; Cycles</span>
+                                    <span class="flex items-center font-black text-xs text-background-dark dark:text-white">
+                                        <span
+                                            class="material-symbols-outlined text-sm leading-none mr-0.5 text-[#EAB308]"
+                                            style="font-variation-settings: 'FILL' 1;">star</span> 5.0
+                                    </span>
+                                </div>
+                                <h4
+                                    class="font-black text-lg text-background-dark dark:text-white line-clamp-2 mb-2 group-hover:text-[#65A30D] transition-colors">
+                                    Cozy Lo-Fi Isometric Worlds in Blender 4.0
+                                </h4>
+                                <div class="flex items-center gap-2 mb-space-md">
+                                    <img class="w-7 h-7 rounded-full object-cover border-2 border-background-dark"
+                                        data-alt="Portrait avatar of Sarah Jenkins, friendly 3D environment artist with curly brown hair in a bright greenhouse studio."
+                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJ9L0exK-j7fvyv-6FZRFhq94uT-ZBrg_AZ0Jxu5GQFTVOktISBt9h8qqFhOhtO0CZsygulSHP85wVGO4amO7UNoef3daW1uilXGUnP2hbNMFZa9vQQtLpIpM_Z1Qah02S-ssbijtT-CikzaRTLQ6A-GtUmaQEzHI_zM8i169LnKlC6IURUZrnhyy70rUzcHSAkPb3nySdRF3m7Sds10nJJ9RmrRt4tncDxYxTTPraS1nxHXWoaaXdyQ">
+                                    <span class="font-bold text-xs text-slate-700 dark:text-slate-300 truncate">Sarah
+                                        Jenkins • 3D Worldbuilder</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-space-md pt-0">
+                            <div
+                                class="flex items-center justify-between bg-[#F8FAFC] dark:bg-[#182235] p-3 rounded-xl border-2 border-background-dark">
+                                <div>
+                                    <p class="font-bold text-[10px] text-slate-500 uppercase tracking-wider">Single
+                                        Purchase</p>
+                                    <p class="font-black text-lg text-background-dark dark:text-white">$45 <span
+                                            class="text-xs font-bold text-slate-500">/ Pro Pass</span></p>
+                                </div>
+                                <button
+                                    class="px-4 py-2 rounded-lg bg-[#A3E635] text-background-dark font-black text-xs uppercase border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] hover:bg-primary-dark active:translate-y-0.5 transition-all"
+                                    type="button">
+                                    Enroll ⚡
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 3: Motion Graphics (Orange Accent) -->
+                    <div
+                        class="flex flex-col justify-between bg-white dark:bg-[#111726] neo-border-3 neo-shadow rounded-2xl overflow-hidden hover:-translate-y-1 hover:shadow-[6px_6px_0px_#F97316] transition-all group">
+                        <div>
+                            <div class="h-3 w-full bg-pop-orange"></div>
+                            <div
+                                class="relative h-48 overflow-hidden bg-slate-100 dark:bg-[#182235] border-b-2 border-background-dark">
+                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    data-alt="Kinetic bold typography poster in motion with expressive distorted experimental neo-brutalist letterforms, bright high-contrast lime and punchy purple overlays, after effects render."
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlgls2VNBxCzU70Bi6PDB9XxS_M7fNQGZYRjLj8eJgxqXDFsUWBKuGPDjM_Vd-VkAhuAFDSsnsumrSH8v6bXGRWiBAk1CV15v7kLTdN3jRbAT3SqWPs9quouVUQnolS9n55DOe3TNoxvLQ6FXmL6fEI4c2KGy1g-4g1h40jAtvsCWzyT3KKXuZXeXKum0slYjWAiUk6KysAO7ryNfY9ky9h9zCD8anFcXiSz6vRyh7i1uJ7g8ZtT1iag">
+                                <span
+                                    class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-md bg-pop-orange text-white font-black text-xs uppercase border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] -rotate-2">⚡
+                                    Motion</span>
+                                <span
+                                    class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-md bg-background-dark text-white font-black text-xs border border-white">16h
+                                    15m</span>
+                            </div>
+                            <div class="p-space-md">
+                                <div
+                                    class="flex items-center justify-between text-slate-600 dark:text-slate-400 mb-1.5">
+                                    <span
+                                        class="font-bold text-xs uppercase bg-[#FFEDD5] text-[#C2410C] px-2 py-0.5 rounded border border-[#C2410C]">After
+                                        Effects &amp; Cavalry</span>
+                                    <span class="flex items-center font-black text-xs text-background-dark dark:text-white">
+                                        <span
+                                            class="material-symbols-outlined text-sm leading-none mr-0.5 text-[#EAB308]"
+                                            style="font-variation-settings: 'FILL' 1;">star</span> 4.85
+                                    </span>
+                                </div>
+                                <h4
+                                    class="font-black text-lg text-background-dark dark:text-white line-clamp-2 mb-2 group-hover:text-[#EA580C] transition-colors">
+                                    Kinetic Typography &amp; Pop UI Animations
+                                </h4>
+                                <div class="flex items-center gap-2 mb-space-md">
+                                    <img class="w-7 h-7 rounded-full object-cover border-2 border-background-dark"
+                                        data-alt="Portrait photo of Kai Takahashi, modern Japanese motion director wearing a black beanie and denim jacket in a Tokyo design agency."
+                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEsjHT4F-HLqL8TdFAwcNkCgSEDGETgxFm_FFslhYGDzC8S7y8BxmQ7v7-Zs4nLJE60F_iMz2GgmbI4Eg6-BmrQvO87051QBpUejd0wZwZy2LMiYT-NQI1V3ZDuPgHOcPrRVIbGvdRtDDZ9UMMbfnlQTSpWaDQVNCAh5wHcGe14URrZACt-K6BQYwkIi7a6tb0_3HaRvmSa46Kib_FhFuzlXRlYETCZ6MnhJJnj2j-oGK6K_WbQARw8g">
+                                    <span class="font-bold text-xs text-slate-700 dark:text-slate-300 truncate">Kai
+                                        Takahashi • Brand Motion Lead</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-space-md pt-0">
+                            <div
+                                class="flex items-center justify-between bg-[#F8FAFC] dark:bg-[#182235] p-3 rounded-xl border-2 border-background-dark">
+                                <div>
+                                    <p class="font-bold text-[10px] text-slate-500 uppercase tracking-wider">Single
+                                        Purchase</p>
+                                    <p class="font-black text-lg text-background-dark dark:text-white">$34 <span
+                                            class="text-xs font-bold text-slate-500">/ Pro Pass</span></p>
+                                </div>
+                                <button
+                                    class="px-4 py-2 rounded-lg bg-[#A3E635] text-background-dark font-black text-xs uppercase border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] hover:bg-primary-dark active:translate-y-0.5 transition-all"
+                                    type="button">
+                                    Enroll ⚡
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 4: Godot Game Dev (Purple Accent) -->
+                    <div
+                        class="flex flex-col justify-between bg-white dark:bg-[#111726] neo-border-3 neo-shadow rounded-2xl overflow-hidden hover:-translate-y-1 hover:shadow-[6px_6px_0px_#A855F7] transition-all group">
+                        <div>
+                            <div class="h-3 w-full bg-[#A855F7]"></div>
+                            <div
+                                class="relative h-48 overflow-hidden bg-slate-100 dark:bg-[#182235] border-b-2 border-background-dark">
+                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    data-alt="Charming 2D pixel-art platformer level screenshot featuring a hooded hero running across ruined marble columns with glowing blue crystals and magical particle effects, Godot 4 engine."
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1ENqnfxFxxeHvbt_oneA7sQMXXKva07PDAuPloQLvzTjz8K5ePiS9v07-gvH6fFzqnnJKPXPKfWClg1yJNeCrAlakOXb7HrVjMthPrH5j8GVAXjzz0KgCrsDcJy5Avgqg4aw0KEyq1JhcXNUW409X6WeDR2_pv8N1WaPcjj3CBdiBnEUWT2GQn1GnB5WnlssujHKmQkXZlcuIh9E13uLgU_dePA6XJRDa7u0roVNh_18pTe7dJ4ktBg">
+                                <span
+                                    class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-md bg-[#A855F7] text-white font-black text-xs uppercase border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] rotate-3">👾
+                                    Game Dev</span>
+                                <span
+                                    class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-md bg-background-dark text-white font-black text-xs border border-white">31h
+                                    00m</span>
+                            </div>
+                            <div class="p-space-md">
+                                <div
+                                    class="flex items-center justify-between text-slate-600 dark:text-slate-400 mb-1.5">
+                                    <span
+                                        class="font-bold text-xs uppercase bg-[#F3E8FF] text-[#7E22CE] px-2 py-0.5 rounded border border-[#7E22CE]">Godot
+                                        4 &amp; GDScript</span>
+                                    <span class="flex items-center font-black text-xs text-background-dark dark:text-white">
+                                        <span
+                                            class="material-symbols-outlined text-sm leading-none mr-0.5 text-[#EAB308]"
+                                            style="font-variation-settings: 'FILL' 1;">star</span> 4.92
+                                    </span>
+                                </div>
+                                <h4
+                                    class="font-black text-lg text-background-dark dark:text-white line-clamp-2 mb-2 group-hover:text-[#9333EA] transition-colors">
+                                    Make Your First 2D Action Platformer in Godot 4
+                                </h4>
+                                <div class="flex items-center gap-2 mb-space-md">
+                                    <img class="w-7 h-7 rounded-full object-cover border-2 border-background-dark"
+                                        data-alt="Portrait avatar of Maya Lin, cheerful indie game developer and programmer with colorful dyed hair and retro gaming poster background."
+                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOxbANeEO4rxbboUv7vBF7wwWejbEF50l70aNp1JU3-uAARq-V23Lb2AAV4iCMXSsLk33YiatVV6EAQm5mcdVjRBQjEJg4OcnbVcgyaF4is1ub6aMAJ82aYskloBGDFhzls38pOGTabeKHVL_avNgXjFrdHARe-FclfehjfOYC-cne3ZVS3-YxKbXxobFOvE2XhNf3s5svRnG-6pplPHC8RwgpSqWhjIzGptSmm5h4H1yUkLzDcrO-3g">
+                                    <span class="font-bold text-xs text-slate-700 dark:text-slate-300 truncate">Maya Lin
+                                        • Indie Studio Founder</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-space-md pt-0">
+                            <div
+                                class="flex items-center justify-between bg-[#F8FAFC] dark:bg-[#182235] p-3 rounded-xl border-2 border-background-dark">
+                                <div>
+                                    <p class="font-bold text-[10px] text-slate-500 uppercase tracking-wider">Single
+                                        Purchase</p>
+                                    <p class="font-black text-lg text-background-dark dark:text-white">$49 <span
+                                            class="text-xs font-bold text-slate-500">/ Pro Pass</span></p>
+                                </div>
+                                <button
+                                    class="px-4 py-2 rounded-lg bg-[#A3E635] text-background-dark font-black text-xs uppercase border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] hover:bg-primary-dark active:translate-y-0.5 transition-all"
+                                    type="button">
+                                    Enroll ⚡
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 5: Three.js & GLSL (Cyan Accent) -->
+                    <div
+                        class="flex flex-col justify-between bg-white dark:bg-[#111726] neo-border-3 neo-shadow rounded-2xl overflow-hidden hover:-translate-y-1 hover:shadow-[6px_6px_0px_#06B6D4] transition-all group">
+                        <div>
+                            <div class="h-3 w-full bg-pop-cyan"></div>
+                            <div
+                                class="relative h-48 overflow-hidden bg-slate-100 dark:bg-[#182235] border-b-2 border-background-dark">
+                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    data-alt="Interactive abstract 3D fluid visualizer with iridescent chrome liquid shaders floating over dark gradient space, WebGL and GLSL mathematical procedural generation."
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOk2sbMgdgyu0peHRRJ4gM5rv0-4Hy1ITiPjmInwp0NHZX4PXu6PV2NI91ylqJqsKlB_iDSKOEXnPqMxDd5zH3HZa3r2i54Mhe4ftpmyMRTSLJwKOAkQ_GOYZbiNdzYAKnZE9Sn-i1t6JJEZKtiZqmuvU-m8ztuPVx9lrUuah6g58Q1Kv64dvP7Fq3W0FCOJp-UsAEr_PlLxX3zTyk8rSJMJND_fHVZN2cIY6mFmXy97pkV-hsT6fVKg">
+                                <span
+                                    class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-md bg-pop-cyan text-white font-black text-xs uppercase border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] -rotate-2">💎
+                                    Creative Tech</span>
+                                <span
+                                    class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-md bg-background-dark text-white font-black text-xs border border-white">22h
+                                    30m</span>
+                            </div>
+                            <div class="p-space-md">
+                                <div
+                                    class="flex items-center justify-between text-slate-600 dark:text-slate-400 mb-1.5">
+                                    <span
+                                        class="font-bold text-xs uppercase bg-[#CFFAFE] text-[#0891B2] px-2 py-0.5 rounded border border-[#0891B2]">Three.js,
+                                        GLSL, WebGL</span>
+                                    <span class="flex items-center font-black text-xs text-background-dark dark:text-white">
+                                        <span
+                                            class="material-symbols-outlined text-sm leading-none mr-0.5 text-[#EAB308]"
+                                            style="font-variation-settings: 'FILL' 1;">star</span> 4.95
+                                    </span>
+                                </div>
+                                <h4
+                                    class="font-black text-lg text-background-dark dark:text-white line-clamp-2 mb-2 group-hover:text-[#0891B2] transition-colors">
+                                    Three.js &amp; GLSL Shaders: Interactive Web Experiences
+                                </h4>
+                                <div class="flex items-center gap-2 mb-space-md">
+                                    <img class="w-7 h-7 rounded-full object-cover border-2 border-background-dark"
+                                        data-alt="Portrait photo of Alex Rivera, creative technologist with minimalist aesthetic sitting in modern loft workspace."
+                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDB3rsV8VyHp7OEmMJEN9dRE02TjSQHsotXOtrUJiMRCdzJVDxttkSShlLR5aSCRjBlSEqCrSbZvIUVaVajmk3lRJl97ziryD7pzjfUwkhUWLFwnfWQ6wDmzuvWiHUHRh9zaa_ckEUVMjAd9ZOUWczGRzsN5FaFzFuzOSu5kCwJKojD1tO7-2KhZdwCaZJJPzeGhiy_W3BjlbpICyyv7e7K2qHA21AO0wuOtwG9kSPbHYCpMsyNx4yKWQ">
+                                    <span class="font-bold text-xs text-slate-700 dark:text-slate-300 truncate">Alex
+                                        Rivera • Creative Tech Lead</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-space-md pt-0">
+                            <div
+                                class="flex items-center justify-between bg-[#F8FAFC] dark:bg-[#182235] p-3 rounded-xl border-2 border-background-dark">
+                                <div>
+                                    <p class="font-bold text-[10px] text-slate-500 uppercase tracking-wider">Single
+                                        Purchase</p>
+                                    <p class="font-black text-lg text-background-dark dark:text-white">$55 <span
+                                            class="text-xs font-bold text-slate-500">/ Pro Pass</span></p>
+                                </div>
+                                <button
+                                    class="px-4 py-2 rounded-lg bg-[#A3E635] text-background-dark font-black text-xs uppercase border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] hover:bg-primary-dark active:translate-y-0.5 transition-all"
+                                    type="button">
+                                    Enroll ⚡
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 6: Spline 3D + Webflow (Yellow Accent) -->
+                    <div
+                        class="flex flex-col justify-between bg-white dark:bg-[#111726] neo-border-3 neo-shadow rounded-2xl overflow-hidden hover:-translate-y-1 hover:shadow-[6px_6px_0px_#EAB308] transition-all group">
+                        <div>
+                            <div class="h-3 w-full bg-[#EAB308]"></div>
+                            <div
+                                class="relative h-48 overflow-hidden bg-slate-100 dark:bg-[#182235] border-b-2 border-background-dark">
+                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    data-alt="Interactive 3D glass product mockup in Spline with frosted transparency, neon gradients, and micro-physics toggles on sleek dark background."
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCB9cMxiVxdQjPtPk5Tf6ylXgReEMtCjd7BsTL3DyGTEGP9Pia0ODqNmqh7zWEGydzlcrWNv4kFOFMDnQXmq1o7rCbCN0VXeQiS7jplUn_TPGWb5lclor_i-BWk2kAYpeqX6lTWg3ghb24LDRKk2mT_k_Up5stLgX437cMw4CNRlZm5JTX6bdg6AZ6Mp3otEPXsyW_dBLPtPF7nRXnbqZtTM_GZ0yeblcl9DYHWTzJBjAbcJl79XbSohQ">
+                                <span
+                                    class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-md bg-[#FDE047] text-background-dark font-black text-xs uppercase border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] rotate-2">✨
+                                    UI/UX 3D</span>
+                                <span
+                                    class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-md bg-background-dark text-white font-black text-xs border border-white">14h
+                                    20m</span>
+                            </div>
+                            <div class="p-space-md">
+                                <div
+                                    class="flex items-center justify-between text-slate-600 dark:text-slate-400 mb-1.5">
+                                    <span
+                                        class="font-bold text-xs uppercase bg-[#FEF08A] text-[#A16207] px-2 py-0.5 rounded border border-[#A16207]">Spline
+                                        3D &amp; Webflow</span>
+                                    <span class="flex items-center font-black text-xs text-background-dark dark:text-white">
+                                        <span
+                                            class="material-symbols-outlined text-sm leading-none mr-0.5 text-[#EAB308]"
+                                            style="font-variation-settings: 'FILL' 1;">star</span> 4.88
+                                    </span>
+                                </div>
+                                <h4
+                                    class="font-black text-lg text-background-dark dark:text-white line-clamp-2 mb-2 group-hover:text-[#CA8A04] transition-colors">
+                                    Spline 3D + Webflow: Spatial Web Design Systems
+                                </h4>
+                                <div class="flex items-center gap-2 mb-space-md">
+                                    <img class="w-7 h-7 rounded-full object-cover border-2 border-background-dark"
+                                        data-alt="Portrait photo of Chloe Vance, digital product designer with sleek glasses in a sunlit Scandinavian style office."
+                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUHaoV1wxeWiUIWBEClf8M_Y_mtxgSUVzyNfPdYaoFcRCiDibNH4evuVxahfZD_B-D2_gCcRQ2YWEDfDc2X55P0HoGKNlgkbm33V-4hbk23NW3gOOFDUnMDHV0YfQgpJCmMD19PNoAxcAee1TSc0YBC4qAd8HEJrfPSWHoE11Ce0RA9kLUwNtrMguAibsdwMOmqaoe3P4MyY-6f4OTVX0CxHs6DaRPyXRFL9_1uHXMWS4PFvmGxWeANw">
+                                    <span class="font-bold text-xs text-slate-700 dark:text-slate-300 truncate">Chloe
+                                        Vance • Spatial UI Director</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-space-md pt-0">
+                            <div
+                                class="flex items-center justify-between bg-[#F8FAFC] dark:bg-[#182235] p-3 rounded-xl border-2 border-background-dark">
+                                <div>
+                                    <p class="font-bold text-[10px] text-slate-500 uppercase tracking-wider">Single
+                                        Purchase</p>
+                                    <p class="font-black text-lg text-background-dark dark:text-white">$39 <span
+                                            class="text-xs font-bold text-slate-500">/ Pro Pass</span></p>
+                                </div>
+                                <button
+                                    class="px-4 py-2 rounded-lg bg-[#A3E635] text-background-dark font-black text-xs uppercase border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] hover:bg-primary-dark active:translate-y-0.5 transition-all"
+                                    type="button">
+                                    Enroll ⚡
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 7: Generative AI Concept Art (Mint Accent) -->
+                    <div
+                        class="flex flex-col justify-between bg-white dark:bg-[#111726] neo-border-3 neo-shadow rounded-2xl overflow-hidden hover:-translate-y-1 hover:shadow-[6px_6px_0px_#10B981] transition-all group">
+                        <div>
+                            <div class="h-3 w-full bg-[#10B981]"></div>
+                            <div
+                                class="relative h-48 overflow-hidden bg-slate-100 dark:bg-[#182235] border-b-2 border-background-dark">
+                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    data-alt="Sci-fi cyberpunk city concept architecture with layered digital brush strokes, photobashed robotic exoskeletons, and procedural generative depth maps."
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY84WZYf40-GsNYAMsvSlOxEOtZeF_xkp2ap7ffyyDGPf4j1_aM5gW_glIDcWLJLn97a85Ld34rf7y0q_TIyXbkHVQV2VVUkiEtMFKWAFQ3jcGzNYPzEmxU-aWC-pGtKyntAPPWuY6SGT_aMj8Rf6a4RQT3Cfmvfex77S26L2ZG_Wm-6w_l2N0nUquYpywRk330iD81jNG-90fcDJ75dVuVUUtIqSqQtWIdY66chPwJU8tn7HCnd9rPA">
+                                <span
+                                    class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-md bg-[#10B981] text-white font-black text-xs uppercase border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] -rotate-3">🤖
+                                    Visual Tech</span>
+                                <span
+                                    class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-md bg-background-dark text-white font-black text-xs border border-white">12h
+                                    00m</span>
+                            </div>
+                            <div class="p-space-md">
+                                <div
+                                    class="flex items-center justify-between text-slate-600 dark:text-slate-400 mb-1.5">
+                                    <span
+                                        class="font-bold text-xs uppercase bg-[#D1FAE5] text-[#059669] px-2 py-0.5 rounded border border-[#059669]">ComfyUI
+                                        &amp; Photoshop</span>
+                                    <span class="flex items-center font-black text-xs text-background-dark dark:text-white">
+                                        <span
+                                            class="material-symbols-outlined text-sm leading-none mr-0.5 text-[#EAB308]"
+                                            style="font-variation-settings: 'FILL' 1;">star</span> 4.82
+                                    </span>
+                                </div>
+                                <h4
+                                    class="font-black text-lg text-background-dark dark:text-white line-clamp-2 mb-2 group-hover:text-[#059669] transition-colors">
+                                    Generative AI Workflows for Concept Artists
+                                </h4>
+                                <div class="flex items-center gap-2 mb-space-md">
+                                    <img class="w-7 h-7 rounded-full object-cover border-2 border-background-dark"
+                                        data-alt="Portrait photo of Marcus Wu, concept artist wearing a dark hoodie working on a high-end drawing tablet in an art studio."
+                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCosdFLEC0ry9oUHdL_2Tpw4xNR67XC0sErhJhOVA0loI1bBOmBPcmjuAqjqdnjJ70I48qflsvgP4QRSuBLiHRyuSAzyePg1p-odO6rfJx9F2OXnRjPt6zgehHHI8-aHRDZYFdHPqRArhf4hPlohxSoQW03zqrk53KDClLut8-B_xEQaF7m6re_3b_S9WcyIMUXgbTg-FeL5Mv4I_0xQzBG2I3UyHL0OFoCSAEOeV7XwCZSNoNX1Rx8dA">
+                                    <span class="font-bold text-xs text-slate-700 dark:text-slate-300 truncate">Marcus
+                                        Wu • Principal Concept Artist</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-space-md pt-0">
+                            <div
+                                class="flex items-center justify-between bg-[#F8FAFC] dark:bg-[#182235] p-3 rounded-xl border-2 border-background-dark">
+                                <div>
+                                    <p class="font-bold text-[10px] text-slate-500 uppercase tracking-wider">Single
+                                        Purchase</p>
+                                    <p class="font-black text-lg text-background-dark dark:text-white">$42 <span
+                                            class="text-xs font-bold text-slate-500">/ Pro Pass</span></p>
+                                </div>
+                                <button
+                                    class="px-4 py-2 rounded-lg bg-[#A3E635] text-background-dark font-black text-xs uppercase border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] hover:bg-primary-dark active:translate-y-0.5 transition-all"
+                                    type="button">
+                                    Enroll ⚡
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 8: Anime BG Painting (Sky Blue Accent) -->
+                    <div
+                        class="flex flex-col justify-between bg-white dark:bg-[#111726] neo-border-3 neo-shadow rounded-2xl overflow-hidden hover:-translate-y-1 hover:shadow-[6px_6px_0px_#3B82F6] transition-all group">
+                        <div>
+                            <div class="h-3 w-full bg-[#3B82F6]"></div>
+                            <div
+                                class="relative h-48 overflow-hidden bg-slate-100 dark:bg-[#182235] border-b-2 border-background-dark">
+                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    data-alt="Breathtaking anime painted background of a sun-drenched train crossing in suburban Japan with vibrant green summer trees, fluffy clouds, and realistic gouache style brush textures."
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnYSJYlob_NGH8x17ythnWXRQE5TnWgXDl1R97dpVlhiK8CNUG4_Knqdcy5foZFW_WBX_Ic6Rui7VWcDzobP0LLI_Zvny2T8VozMV6gxoWGq81u7p1Ljo7jRr3FoTc9xt9YNHTTsH48L2oZJ4aPTaIMVU65uNt-pPX92u3rLWyZ0I3mCgpvgPaqmwsZbu_0NqKWbIZlYJYYrDoLbQtQddRSPTZBjHSOEOnX0pSib6GIa-0kkcPcvWMsQ">
+                                <span
+                                    class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-md bg-[#3B82F6] text-white font-black text-xs uppercase border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] rotate-2">🎨
+                                    Illustration</span>
+                                <span
+                                    class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-md bg-background-dark text-white font-black text-xs border border-white">19h
+                                    50m</span>
+                            </div>
+                            <div class="p-space-md">
+                                <div
+                                    class="flex items-center justify-between text-slate-600 dark:text-slate-400 mb-1.5">
+                                    <span
+                                        class="font-bold text-xs uppercase bg-[#DBEAFE] text-[#1D4ED8] px-2 py-0.5 rounded border border-[#1D4ED8]">Photoshop
+                                        &amp; Procreate</span>
+                                    <span class="flex items-center font-black text-xs text-background-dark dark:text-white">
+                                        <span
+                                            class="material-symbols-outlined text-sm leading-none mr-0.5 text-[#EAB308]"
+                                            style="font-variation-settings: 'FILL' 1;">star</span> 4.91
+                                    </span>
+                                </div>
+                                <h4
+                                    class="font-black text-lg text-background-dark dark:text-white line-clamp-2 mb-2 group-hover:text-[#2563EB] transition-colors">
+                                    Anime Background Painting &amp; Color Scripting
+                                </h4>
+                                <div class="flex items-center gap-2 mb-space-md">
+                                    <img class="w-7 h-7 rounded-full object-cover border-2 border-background-dark"
+                                        data-alt="Portrait photo of Elena Rostova, background painter with warm smile and painterly aesthetic in cozy attic art studio."
+                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEJj8t1WZMwvuaXACGxduzj9YgieUK20Q8kc_USm8DZ1cU4OULzugLDmoW6W8DoZvqm1NA2oykkHUCYqQx7-2JGcxUKWyKMwAsc-hPbN9jcZi64VBNR0rpeLOpfFgPwclhpcMwqnk1xRqTjGnpyfAtbRjoGHbxK32DFshOXIFEw1gBiq4idJosiXCT2z3J1Dt7HRV4kFoayv9h0kRCnLJycXAGAtABKaGlisFiXq5N4ghL5n8PGgC-_w">
+                                    <span class="font-bold text-xs text-slate-700 dark:text-slate-300 truncate">Elena
+                                        Rostova • Studio Ghibli Fan Animator</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-space-md pt-0">
+                            <div
+                                class="flex items-center justify-between bg-[#F8FAFC] dark:bg-[#182235] p-3 rounded-xl border-2 border-background-dark">
+                                <div>
+                                    <p class="font-bold text-[10px] text-slate-500 uppercase tracking-wider">Single
+                                        Purchase</p>
+                                    <p class="font-black text-lg text-background-dark dark:text-white">$39 <span
+                                            class="text-xs font-bold text-slate-500">/ Pro Pass</span></p>
+                                </div>
+                                <button
+                                    class="px-4 py-2 rounded-lg bg-[#A3E635] text-background-dark font-black text-xs uppercase border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] hover:bg-primary-dark active:translate-y-0.5 transition-all"
+                                    type="button">
+                                    Enroll ⚡
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Pagination Dock - Playful Buttons -->
+                <div
+                    class="flex flex-col sm:flex-row items-center justify-between gap-space-md p-space-md bg-white dark:bg-[#111726] neo-border-3 neo-shadow rounded-2xl mb-space-xl transition-colors">
+                    <span class="font-bold text-sm text-slate-600 dark:text-slate-300">
+                        Showing <span class="font-black text-background-dark dark:text-white">1–8</span> of <span
+                            class="font-black text-background-dark dark:text-white">86</span> courses
+                    </span>
+                    <div class="flex items-center gap-2">
+                        <button
+                            class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-[#182235] text-slate-400 dark:text-slate-600 flex items-center justify-center cursor-not-allowed border-2 border-slate-300 dark:border-slate-700"
+                            disabled="" type="button">
+                            <span class="material-symbols-outlined text-lg leading-none font-bold">chevron_left</span>
+                        </button>
+                        <button
+                            class="w-10 h-10 rounded-xl bg-[#FDE047] text-background-dark font-black text-sm border-2 border-background-dark shadow-[2px_2px_0px_#0F172A]"
+                            type="button">1</button>
+                        <button
+                            class="w-10 h-10 rounded-xl bg-white dark:bg-[#182235] hover:bg-[#A3E635] text-background-dark dark:text-slate-200 font-black text-sm border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] transition-all"
+                            type="button">2</button>
+                        <button
+                            class="w-10 h-10 rounded-xl bg-white dark:bg-[#182235] hover:bg-[#A3E635] text-background-dark dark:text-slate-200 font-black text-sm border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] transition-all"
+                            type="button">3</button>
+                        <span class="px-1 text-slate-500 font-black text-sm">...</span>
+                        <button
+                            class="w-10 h-10 rounded-xl bg-white dark:bg-[#182235] hover:bg-[#A3E635] text-background-dark dark:text-slate-200 font-black text-sm border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] transition-all"
+                            type="button">11</button>
+                        <button
+                            class="w-10 h-10 rounded-xl bg-[#A3E635] text-background-dark font-black text-sm border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] flex items-center justify-center hover:translate-x-0.5 transition-transform"
+                            type="button">
+                            <span class="material-symbols-outlined text-lg leading-none font-bold">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Guarantee & Value Proposition Section - Multi-Color Cards -->
+                <div
+                    class="p-space-lg md:p-space-xl bg-background-dark dark:bg-[#0B0F19] text-white rounded-3xl neo-border-3 neo-shadow-lg relative overflow-hidden transition-colors">
+                    <div class="max-w-3xl mb-space-lg relative z-10">
+                        <div
+                            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#A3E635] text-background-dark font-black text-xs uppercase tracking-wide mb-space-sm border-2 border-white shadow-[2px_2px_0px_white] -rotate-2">
+                            <span class="">CREATOR PROMISE 🔥</span>
+                        </div>
+                        <h3 class="font-black text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight mb-space-sm">
+                            Why SkillPop Courses Hit Different ⚡
+                        </h3>
+                        <p class="font-bold text-base sm:text-lg text-slate-300">
+                            We threw out stale 40-hour monotone video lectures. Every course is an interactive creative
+                            studio designed to ship production-level portfolio pieces that get you hired.
+                        </p>
+                    </div>
+                    <!-- 3 Distinct Neo-Brutalist Sticker Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg relative z-10">
+                        <!-- Card 1: Bubblegum Pink -->
+                        <div
+                            class="p-6 rounded-2xl bg-[#FFE4E6] text-background-dark neo-border-3 shadow-[4px_4px_0px_#F43F5E] transform hover:-translate-y-1 transition-all">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-pop-pink text-white flex items-center justify-center mb-4 border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] -rotate-6">
+                                <span class="material-symbols-outlined text-2xl leading-none">rate_review</span>
+                            </div>
+                            <div
+                                class="inline-block px-2.5 py-0.5 rounded bg-pop-pink text-white font-black text-[10px] uppercase mb-2">
+                                24H TURNAROUND</div>
+                            <h4 class="font-black text-xl text-background-dark mb-2">Human Mentor Feedback</h4>
+                            <p class="font-bold text-sm text-slate-800 leading-relaxed">
+                                Submit your work files directly to senior animators and developers. Receive custom
+                                annotated Loom video breakdowns within 24 hours.
+                            </p>
+                        </div>
+                        <!-- Card 2: Mint / Cyan -->
+                        <div
+                            class="p-6 rounded-2xl bg-[#CFFAFE] text-background-dark neo-border-3 shadow-[4px_4px_0px_#06B6D4] transform hover:-translate-y-1 transition-all">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-pop-cyan text-white flex items-center justify-center mb-4 border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] rotate-6">
+                                <span class="material-symbols-outlined text-2xl leading-none">folder_zip</span>
+                            </div>
+                            <div
+                                class="inline-block px-2.5 py-0.5 rounded bg-[#0891B2] text-white font-black text-[10px] uppercase mb-2">
+                                PRODUCTION READY</div>
+                            <h4 class="font-black text-xl text-background-dark mb-2">Production Project Files</h4>
+                            <p class="font-bold text-sm text-slate-800 leading-relaxed">
+                                Full commercial-ready starter kits (.blend, .aep, .fig, and GLSL repositories) updated
+                                continuously with each software release.
+                            </p>
+                        </div>
+                        <!-- Card 3: Cyber Yellow -->
+                        <div
+                            class="p-6 rounded-2xl bg-[#FEF08A] text-background-dark neo-border-3 shadow-[4px_4px_0px_#EAB308] transform hover:-translate-y-1 transition-all">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-[#EAB308] text-background-dark flex items-center justify-center mb-4 border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] -rotate-3">
+                                <span class="material-symbols-outlined text-2xl leading-none">military_tech</span>
+                            </div>
+                            <div
+                                class="inline-block px-2.5 py-0.5 rounded bg-[#CA8A04] text-white font-black text-[10px] uppercase mb-2">
+                                ON-CHAIN &amp; GUILD XP</div>
+                            <h4 class="font-black text-xl text-background-dark mb-2">Gamified Badges &amp; XP</h4>
+                            <p class="font-bold text-sm text-slate-800 leading-relaxed">
+                                Earn gamified XP, unlock verified digital creator credentials, and get automatically
+                                showcased in the SkillPop talent guild.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Fun background stickers -->
+                    <div
+                        class="absolute -right-12 -bottom-12 w-64 h-64 bg-[#A3E635] rounded-full blur-3xl opacity-20 pointer-events-none">
+                    </div>
+                    <div
+                        class="absolute -left-12 -top-12 w-64 h-64 bg-[#EC4899] rounded-full blur-3xl opacity-15 pointer-events-none">
+                    </div>
+                </div>
+            </div>
+            <!-- Interactive Filter & Theme Switch Script -->
+            <script>
+                (function initCatalogInteractions() {
+                    // 1. Dynamic Theme Switcher logic
+                    const lightBtn = document.getElementById('lightModeBtn');
+                    const darkBtn = document.getElementById('darkModeBtn');
+                    const toggleGroup = document.getElementById('headerThemeToggleGroup');
+
+                    function updateThemeUI(isDark) {
+                        if (isDark) {
+                            document.documentElement.classList.add('dark');
+                            document.body.classList.add('dark');
+                            if (lightBtn && darkBtn) {
+                                lightBtn.className = "flex items-center justify-center w-7 h-7 rounded-full bg-transparent text-slate-400 hover:text-white transition-all";
+                                darkBtn.className = "flex items-center justify-center w-7 h-7 rounded-full text-background-dark bg-[#38BDF8] border border-background-dark shadow-sm transition-all";
+                            }
+                        } else {
+                            document.documentElement.classList.remove('dark');
+                            document.body.classList.remove('dark');
+                            if (lightBtn && darkBtn) {
+                                lightBtn.className = "flex items-center justify-center w-7 h-7 rounded-full bg-[#FDE047] text-background-dark border border-background-dark shadow-sm transition-all";
+                                darkBtn.className = "flex items-center justify-center w-7 h-7 rounded-full text-slate-600 hover:text-background-dark transition-all";
+                            }
+                        }
+                    }
+
+                    function toggleDarkMode() {
+                        const isCurrentlyDark = document.documentElement.classList.contains('dark');
+                        updateThemeUI(!isCurrentlyDark);
+                    }
+
+                    if (lightBtn) {
+                        lightBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            updateThemeUI(false);
+                        });
+                    }
+
+                    if (darkBtn) {
+                        darkBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            updateThemeUI(true);
+                        });
+                    }
+
+                    if (toggleGroup) {
+                        toggleGroup.addEventListener('click', (e) => {
+                            if (e.target.closest('#lightModeBtn') || e.target.closest('#darkModeBtn')) return;
+                            toggleDarkMode();
+                        });
+                    }
+
+                    // Check current document state
+                    updateThemeUI(document.documentElement.classList.contains('dark'));
+
+                    // 2. Discipline Pill Switching
+                    const pills = document.querySelectorAll('.discipline-pill');
+                    pills.forEach(pill => {
+                        pill.addEventListener('click', () => {
+                            pills.forEach(p => {
+                                p.classList.remove('bg-[#A3E635]', 'text-background-dark', 'neo-shadow-sm');
+                                p.classList.add('bg-white', 'text-background-dark', 'dark:bg-[#182235]', 'dark:text-slate-200');
+                            });
+                            pill.classList.remove('bg-white', 'dark:bg-[#182235]', 'dark:text-slate-200');
+                            pill.classList.add('bg-[#A3E635]', 'text-background-dark', 'neo-shadow-sm');
+                        });
+                    });
+
+                    // 3. Live Search Micro-Filter Demo
+                    const searchInput = document.getElementById('courseSearch');
+                    if (searchInput) {
+                        searchInput.addEventListener('input', (e) => {
+                            const query = e.target.value.toLowerCase().trim();
+                            const cards = document.querySelectorAll('.grid > .group');
+                            cards.forEach(card => {
+                                const text = card.textContent.toLowerCase();
+                                if (query === '' || text.includes(query)) {
+                                    card.style.display = 'flex';
+                                } else {
+                                    card.style.display = 'none';
+                                }
+                            });
+                        });
+                    }
+
+                    // 4. Header Main Navigation Active State Switching
+                    const navThemeMap = {
+                        courses: { active: 'bg-[#FDE047]', hover: 'hover:bg-[#FDE047]' },
+                        challenges: { active: 'bg-[#A3E635]', hover: 'hover:bg-[#A3E635]' },
+                        community: { active: 'bg-[#F472B6]', hover: 'hover:bg-[#F472B6]' },
+                        mentors: { active: 'bg-[#38BDF8]', hover: 'hover:bg-[#38BDF8]' }
+                    };
+
+                    const mainNav = document.getElementById('headerMainNav') || document.querySelector('header nav');
+                    if (mainNav) {
+                        const navLinks = mainNav.querySelectorAll('a[data-path]');
+                        navLinks.forEach(link => {
+                            link.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                navLinks.forEach(item => {
+                                    const path = item.getAttribute('data-path') || '';
+                                    const theme = navThemeMap[path] || { active: 'bg-[#FDE047]', hover: 'hover:bg-[#FDE047]' };
+                                    if (item === link) {
+                                        item.setAttribute('aria-current', 'page');
+                                        item.className = `inline-flex items-center justify-center gap-1.5 px-2.5 py-1 transition-all ${theme.active} text-background-dark font-black text-xs rounded-md border-2 border-background-dark shadow-[1.5px_1.5px_0px_#0F172A] cursor-pointer select-none`;
+                                    } else {
+                                        item.removeAttribute('aria-current');
+                                        item.className = `inline-flex items-center justify-center gap-1.5 px-2.5 py-1 text-background-dark dark:text-slate-200 font-bold text-xs ${theme.hover} hover:text-background-dark hover:border-2 hover:border-background-dark rounded-md transition-all cursor-pointer select-none`;
+                                    }
+                                });
+                            });
+                        });
+                    }
+                })();
+            </script>
+        </div>
+    </main>
+    <!-- Footer with Retro Arcade Charm -->
+    <footer
+        class="w-full bg-[#FFFDF8] dark:bg-[#0B0F19] border-t-4 border-background-dark dark:border-[#38BDF8] transition-colors">
+        <div class="w-full px-gutter py-space-xl max-w-340 mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-space-xl mb-space-xl">
+                <div class="lg:col-span-2 flex flex-col gap-space-md">
+                    <div class="flex items-center gap-space-sm"><span
+                            class="font-black text-2xl text-background-dark dark:text-white tracking-tight">SkillPop</span><span
+                            class="font-black text-xs px-2.5 py-0.5 rounded-md bg-[#A3E635] text-background-dark border-2 border-background-dark shadow-[2px_2px_0px_#0F172A] uppercase tracking-wider -rotate-2">Creative
+                            Tech ⚡</span></div>
+                    <p class="font-bold text-sm text-slate-600 dark:text-slate-400 max-w-sm">The neo-creative learning
+                        ecosystem engineered for 3D artists, real-time visualists, motion technologists, and generative
+                        designers worldwide.</p>
+                    <div
+                        class="inline-flex items-center gap-space-sm px-3.5 py-1.5 rounded-xl bg-white dark:bg-[#131A2A] text-background-dark dark:text-slate-300 font-black text-xs w-fit neo-border neo-shadow-sm">
+                        <span
+                            class="w-2.5 h-2.5 rounded-full bg-[#A3E635] border border-background-dark animate-pulse"></span><span
+                            class="">SkillPop Arcade: 100% Operational</span>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-space-sm"><span
+                        class="font-black text-xs text-background-dark dark:text-white uppercase tracking-wider mb-space-xs">Curriculum</span><a
+                        class="font-bold text-sm text-slate-600 dark:text-slate-400 hover:text-background-dark dark:hover:text-white transition-colors"
+                        data-path="courses" href="#">All Courses</a><a
+                        class="font-bold text-sm text-slate-600 dark:text-slate-400 hover:text-background-dark dark:hover:text-white transition-colors"
+                        data-path="career-tracks" href="#">Interactive 3D Paths</a><a
+                        class="font-bold text-sm text-slate-600 dark:text-slate-400 hover:text-background-dark dark:hover:text-white transition-colors"
+                        data-path="challenges" href="#">Game Dev Sprints</a><a
+                        class="font-bold text-sm text-slate-600 dark:text-slate-400 hover:text-background-dark dark:hover:text-white transition-colors"
+                        data-path="courses" href="#">Generative Graphics</a><a
+                        class="font-bold text-sm text-slate-600 dark:text-slate-400 hover:text-background-dark dark:hover:text-white transition-colors"
+                        data-path="courses" href="#">Shader Engineering</a></div>
+                <div class="flex flex-col gap-space-sm"><span
+                        class="font-black text-xs text-background-dark dark:text-white uppercase tracking-wider mb-space-xs">Ecosystem</span><a
+                        class="font-bold text-sm text-slate-600 dark:text-slate-400 hover:text-background-dark dark:hover:text-white transition-colors"
+                        data-path="community" href="#">Student Gallery</a><a
+                        class="font-bold text-sm text-slate-600 dark:text-slate-400 hover:text-background-dark dark:hover:text-white transition-colors"
+                        data-path="challenges" href="#">Weekly Jams</a><a
+                        class="font-bold text-sm text-slate-600 dark:text-slate-400 hover:text-background-dark dark:hover:text-white transition-colors"
+                        data-path="mentors" href="#">1-on-1 Reviews</a><a
+                        class="font-bold text-sm text-slate-600 dark:text-slate-400 hover:text-background-dark dark:hover:text-white transition-colors"
+                        data-path="community" href="#">Discord Guild</a><a
+                        class="font-bold text-sm text-slate-600 dark:text-slate-400 hover:text-background-dark dark:hover:text-white transition-colors"
+                        data-path="pricing" href="#">Campus Licenses</a></div>
+                <div class="flex flex-col gap-space-sm"><span
+                        class="font-black text-xs text-background-dark dark:text-white uppercase tracking-wider mb-space-xs">Platform</span><a
+                        class="font-bold text-sm text-slate-600 dark:text-slate-400 hover:text-background-dark dark:hover:text-white transition-colors"
+                        data-path="login" href="#">Member Portal</a><a
+                        class="font-bold text-sm text-slate-600 dark:text-slate-400 hover:text-background-dark dark:hover:text-white transition-colors"
+                        data-path="legal" href="#">Privacy Policy</a><a
+                        class="font-bold text-sm text-slate-600 dark:text-slate-400 hover:text-background-dark dark:hover:text-white transition-colors"
+                        data-path="legal" href="#">Terms of Service</a><a
+                        class="font-bold text-sm text-slate-600 dark:text-slate-400 hover:text-background-dark dark:hover:text-white transition-colors"
+                        data-path="legal" href="#">Honor Code</a><a
+                        class="font-bold text-sm text-slate-600 dark:text-slate-400 hover:text-background-dark dark:hover:text-white transition-colors"
+                        data-path="legal" href="#">Security Status</a></div>
+            </div>
+            <div
+                class="pt-space-lg border-t-2 border-dashed border-slate-300 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-space-md text-slate-600 dark:text-slate-400 font-bold text-xs">
+                <p class="">© 2025 SkillPop Academy Inc. Crafted with 🔥 for expressive digital creators.</p>
+                <div class="flex items-center gap-space-lg"><a
+                        class="hover:text-background-dark dark:hover:text-white transition-colors" data-path="legal"
+                        href="#">Legal</a><a class="hover:text-background-dark dark:hover:text-white transition-colors"
+                        data-path="legal" href="#">Cookies</a><a
+                        class="hover:text-background-dark dark:hover:text-white transition-colors" data-path="community"
+                        href="#">Support Guild</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Quick Page Switcher for Easy Review -->
+    <div class="fixed bottom-4 right-4 z-50 flex items-center bg-white dark:bg-background-dark p-1.5 rounded-2xl border-2 border-slate-900 dark:border-slate-700 gap-1.5 shadow-pop">
+      <a href="course.html" class="px-3 py-1.5 rounded-xl text-xs bg-[#fde047] text-slate-950 font-black border-2 border-slate-900 dark:border-black">
+        📚 Course Catalog
+      </a>
+      <a href="student-dashboard.html" class="px-3 py-1.5 rounded-xl font-bold text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+        🎓 Student Dashboard
+      </a>
+      <a href="notes.html" class="px-3 py-1.5 rounded-xl font-bold text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+        📝 Study Notes
+      </a>
+      <a href="auth.html" class="px-3 py-1.5 rounded-xl font-bold text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+        🔐 Auth Page
+      </a>
+    </div>
+
+    <!-- Unified Theme Toggle Manager across pages -->
+    <script>
+      (function initTheme() {
+        const html = document.documentElement;
+        const themeGroup = document.getElementById('headerThemeToggleGroup');
+        const lightBtn = document.getElementById('lightModeBtn');
+        const darkBtn = document.getElementById('darkModeBtn');
+
+        function updateThemeUI(isDark) {
+          if (isDark) {
+            html.classList.add('dark');
+            if (lightBtn) {
+              lightBtn.className = 'flex items-center justify-center w-7 h-7 rounded-full bg-transparent text-slate-400 hover:text-white transition-all cursor-pointer';
+            }
+            if (darkBtn) {
+              darkBtn.className = 'flex items-center justify-center w-7 h-7 rounded-full bg-[#38BDF8] text-background-dark border border-background-dark shadow-sm transition-all cursor-pointer';
+            }
+          } else {
+            html.classList.remove('dark');
+            if (lightBtn) {
+              lightBtn.className = 'flex items-center justify-center w-7 h-7 rounded-full bg-[#FDE047] text-background-dark border border-background-dark shadow-sm transition-all cursor-pointer';
+            }
+            if (darkBtn) {
+              darkBtn.className = 'flex items-center justify-center w-7 h-7 rounded-full bg-transparent text-slate-600 hover:text-background-dark transition-all cursor-pointer';
+            }
+          }
+        }
+
+        const savedTheme = localStorage.getItem('skillpop-theme');
+        const isDarkInitial = savedTheme ? (savedTheme === 'dark') : html.classList.contains('dark');
+        updateThemeUI(isDarkInitial);
+
+        if (lightBtn) {
+          lightBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            localStorage.setItem('skillpop-theme', 'light');
+            updateThemeUI(false);
+          });
+        }
+
+        if (darkBtn) {
+          darkBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            localStorage.setItem('skillpop-theme', 'dark');
+            updateThemeUI(true);
+          });
+        }
+
+        if (themeGroup) {
+          themeGroup.addEventListener('click', () => {
+            const currentlyDark = html.classList.contains('dark');
+            const nextDark = !currentlyDark;
+            localStorage.setItem('skillpop-theme', nextDark ? 'dark' : 'light');
+            updateThemeUI(nextDark);
+          });
+        }
+      })();
+    </script>
+
+</body>
+
+</html>

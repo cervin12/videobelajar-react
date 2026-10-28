@@ -7,3 +7,4 @@ export * from './CourseCard';
 export * from './CourseCatalog';
 export * from './ValueProposition';
 export * from './Footer';
+export * from './Sidebar';
