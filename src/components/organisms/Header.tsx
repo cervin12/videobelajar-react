@@ -57,14 +57,10 @@ export const Header: React.FC<HeaderProps> = ({
   level = 'Lvl 6',
   showNavList = true,
 }) => {
-  const [internalActiveTab, setInternalActiveTab] = useState<string>(activeNav);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const searchInputRef = React.useRef<HTMLInputElement | null>(null);
 
   const isDashboard = variant === 'dashboard';
-
-  useEffect(() => {
-    setInternalActiveTab(activeNav);
-  }, [activeNav]);
 
   const handleProfileClick = () => {
     if (onProfileClick) {
@@ -89,14 +85,31 @@ export const Header: React.FC<HeaderProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Cmd+K / Ctrl+K keyboard shortcut to focus search input
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const handleNavClick = (item: NavItem) => {
-    setInternalActiveTab(item.id);
-    if (item.id === 'courses' && onNavigate) {
-      onNavigate('courses');
+    if (item.id === 'courses') {
+      if (onNavigate) onNavigate('courses');
     } else if (item.hashLink) {
       const el = document.querySelector(item.hashLink);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth' });
+      } else if (onNavigate) {
+        onNavigate('dashboard');
+        setTimeout(() => {
+          const target = document.querySelector(item.hashLink!);
+          if (target) target.scrollIntoView({ behavior: 'smooth' });
+        }, 150);
       }
     }
   };
@@ -148,7 +161,7 @@ export const Header: React.FC<HeaderProps> = ({
                   className="hidden xl:flex items-center gap-1 p-1 bg-[#FFFDF8] dark:bg-[#131A2A] rounded-lg neo-border"
                 >
                   {navItems.map((item) => {
-                    const isActive = (activeNav || internalActiveTab) === item.id;
+                    const isActive = activeNav === item.id;
                     return (
                       <button
                         key={item.id}
@@ -173,6 +186,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="flex items-center gap-space-sm bg-white dark:bg-[#131a2a] px-space-md py-1.5 px-2.5 rounded-xl text-background-dark dark:text-slate-200 neo-border max-w-md w-full">
               <Icon name="search" size="lg" className="font-bold text-slate-500" />
               <input
+                ref={searchInputRef}
                 type="text"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
@@ -193,6 +207,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="hidden md:flex items-center gap-space-sm bg-white dark:bg-[#131a2a] px-space-md py-1 px-2 rounded-xl text-background-dark dark:text-slate-200 neo-border">
               <Icon name="search" size="lg" className="font-bold" />
               <input
+                ref={searchInputRef}
                 type="text"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}

@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Header } from '../components/organisms/Header';
 import { Sidebar } from '../components/organisms/Sidebar';
 import { Footer } from '../components/organisms/Footer';
-import { RevealOnScroll } from '../components/atoms/RevealOnScroll';
+import { RevealOnScroll, Skeleton } from '../components/atoms';
+import type { StudentProfile } from '../types/studentDashboard';
+import { studentService, authService } from '../services';
 import {
   studentProfileData,
   activeCoursesData,
@@ -57,21 +59,74 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
   // 2. Search state for Header
   const [searchQuery, setSearchQuery] = useState('');
 
-  // 3. Interactive Student Dashboard States
+  // 3. Interactive Student Dashboard States (Seeded via studentService)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [profile, setProfile] = useState<StudentProfile>(studentProfileData);
   const [currentXp, setCurrentXp] = useState(studentProfileData.currentXp);
-  const [isSprintCompleted, setIsSprintCompleted] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(true);
+  const [isSprintCompleted, setIsSprintCompleted] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const today = new Date().toDateString();
+      return localStorage.getItem(`skillpop_sprint_done_${today}`) === 'true';
+    }
+    return false;
+  });
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [rsvpedEvents, setRsvpedEvents] = useState<Record<string, boolean>>({});
   const [uploadedFileNotes, setUploadedFileNotes] = useState('');
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (isUploadModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsUploadModalOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isUploadModalOpen]);
+
+  useEffect(() => {
+    let isMounted = true;
+    studentService
+      .getProfile()
+      .then((data) => {
+        if (isMounted && data) {
+          setProfile(data);
+          setCurrentXp(data.currentXp);
+        }
+      })
+      .catch(console.error)
+      .finally(() => {
+        if (isMounted) setProfileLoading(false);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    await authService.logout();
+    showToast('👋 Signed out of Creator Lab. See you soon!');
+    if (onNavigateToAuth) onNavigateToAuth();
+  };
 
   // 4. Toast Notifications
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const toastIdRef = React.useRef(0);
 
   const showToast = (text: string) => {
-    const id = Date.now() + Math.random();
+    toastIdRef.current += 1;
+    const id = toastIdRef.current;
     setToasts((prev) => [...prev, { id, text }]);
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
@@ -79,8 +134,14 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
   };
 
   const addXp = (amount: number) => {
-    setCurrentXp((prev) => prev + amount);
-    showToast(`⭐ +${amount} XP Earned! Total: ${(currentXp + amount).toLocaleString()} XP`);
+    const nextXp = currentXp + amount;
+    setCurrentXp(nextXp);
+    setProfile((prev) => ({
+      ...prev,
+      currentXp: nextXp,
+    }));
+    showToast(`⭐ +${amount} XP Earned! Total: ${nextXp.toLocaleString()} XP`);
+    studentService.updateProfile({ currentXp: nextXp }).catch(console.error);
   };
 
   // Sprint task completion
@@ -90,6 +151,10 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
       return;
     }
     setIsSprintCompleted(true);
+    if (typeof window !== 'undefined') {
+      const today = new Date().toDateString();
+      localStorage.setItem(`skillpop_sprint_done_${today}`, 'true');
+    }
     addXp(120);
     showToast('🔥 Sprint completed! Export uploaded (+120 XP).');
   };
@@ -119,6 +184,10 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
   // Modal actions
   const handleSubmitUpload = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!selectedFileName) {
+      showToast('⚠️ Please attach a project file before submitting.');
+      return;
+    }
     setIsUploadModalOpen(false);
     setSelectedFileName(null);
     setUploadedFileNotes('');
@@ -134,6 +203,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
         onClose={() => setIsSidebarOpen(false)}
         activePath="dashboard"
         currentXp={currentXp}
+        onLogout={handleLogout}
         onNavigate={(page) => {
           if (page === 'courses' && onNavigateToCourses) {
             onNavigateToCourses();
@@ -151,9 +221,9 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
         <Header
           variant="dashboard"
           onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
-          streakDays={studentProfileData.streakDays}
+          streakDays={profile.streakDays}
           xp={currentXp}
-          level="Lvl 6"
+          level={profile.level}
           isDark={isDark}
           onToggleTheme={toggleTheme}
           searchQuery={searchQuery}
@@ -211,112 +281,149 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
             <section className="relative overflow-hidden rounded-2xl bg-[#FFFDF8] dark:bg-[#111A2E] p-6 sm:p-8 neo-border-3 neo-shadow-lg transition-colors">
               <div className="absolute -right-16 -bottom-16 w-64 h-64 rounded-full bg-[#A3E635]/20 dark:bg-[#A3E635]/10 blur-3xl pointer-events-none" />
 
-              <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                {/* Left: Greeting & Today's Goal */}
-                <div className="space-y-3 max-w-2xl">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#A3E635] text-background-dark neo-border text-[11px] uppercase tracking-wider font-black shadow-[1.5px_1.5px_0px_#0F172A]">
-                    <span className="material-symbols-outlined text-[16px] font-black">stars</span>
-                    <span>{studentProfileData.cohort}</span>
+              {profileLoading ? (
+                <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                  {/* Left Skeleton */}
+                  <div className="space-y-4 max-w-2xl flex-1">
+                    <Skeleton className="h-6 w-48 rounded-full" />
+                    <Skeleton className="h-10 sm:h-12 w-3/4 rounded-xl" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-full rounded-md" />
+                      <Skeleton className="h-4 w-4/5 rounded-md" />
+                    </div>
+                    <div className="flex flex-wrap items-center gap-3 pt-2">
+                      <Skeleton className="h-10 w-72 rounded-xl" />
+                      <Skeleton className="h-10 w-32 rounded-xl" />
+                    </div>
                   </div>
 
-                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-background-dark dark:text-white tracking-tight leading-tight">
-                    Welcome back,{' '}
-                    <span className="text-primary-dark dark:text-[#A3E635] underline decoration-[#FDE047] decoration-wavy decoration-2">
-                      {studentProfileData.name}!
-                    </span>{' '}
-                    ✨
-                  </h1>
-
-                  <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 font-semibold leading-relaxed">
-                    Ready to level up your rig today? Your animation sprint has 3 new keyframe goals, and mentor Dikshant posted redline notes on your cape collision physics.
-                  </p>
-
-                  {/* Today's Sprint Quest Pill Banner */}
-                  <div className="flex flex-wrap items-center gap-3 pt-2">
-                    <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#FEF08A] dark:bg-[#1E293B] text-xs sm:text-sm text-background-dark dark:text-white neo-border neo-shadow-sm">
-                      <span className="text-base">🎯</span>
-                      <span>
-                        <strong className="font-black text-background-dark dark:text-[#A3E635]">Today's Sprint:</strong> Export 3 walk-cycle keyframes in Blender (+120 XP)
-                      </span>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={handleCompleteSprint}
-                      className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-black neo-border transition-all cursor-pointer ${
-                        isSprintCompleted
-                          ? 'bg-[#FDE047] text-background-dark neo-shadow-sm cursor-default'
-                          : 'bg-[#A3E635] text-background-dark neo-shadow hover:-translate-y-0.5 active:translate-y-0'
-                      }`}
-                    >
-                      <span className="material-symbols-outlined text-[18px]">
-                        {isSprintCompleted ? 'check_circle' : 'play_arrow'}
-                      </span>
-                      <span>{isSprintCompleted ? 'Sprint Done!' : 'Start Sprint'}</span>
-                    </button>
+                  {/* Right Stats Skeletons */}
+                  <div className="grid grid-cols-2 gap-3 min-w-72 lg:w-80">
+                    <Skeleton className="col-span-2 h-24 rounded-xl" />
+                    <Skeleton className="h-20 rounded-xl" />
+                    <Skeleton className="h-20 rounded-xl" />
                   </div>
                 </div>
+              ) : (
+                <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                  {/* Left: Greeting & Today's Goal */}
+                  <div className="space-y-3 max-w-2xl">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#A3E635] text-background-dark neo-border text-[11px] uppercase tracking-wider font-black shadow-[1.5px_1.5px_0px_#0F172A]">
+                      <span className="material-symbols-outlined text-[16px] font-black">stars</span>
+                      <span>{profile.cohort}</span>
+                    </div>
 
-                {/* Right: Gamification Mosaic Stats Cards */}
-                <div className="grid grid-cols-2 gap-3 min-w-72 lg:w-80">
-                  {/* Level Progress */}
-                  <div className="col-span-2 p-3.5 rounded-xl bg-white dark:bg-[#182235] neo-border neo-shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <span className="material-symbols-outlined text-primary-dark dark:text-[#A3E635] text-[20px] font-bold">
-                          military_tech
-                        </span>
-                        <span className="text-xs font-black text-background-dark dark:text-white">
-                          {studentProfileData.level}
+                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-background-dark dark:text-white tracking-tight leading-tight">
+                      Welcome back,{' '}
+                      <span className="text-primary-dark dark:text-[#A3E635] underline decoration-[#FDE047] decoration-wavy decoration-2">
+                        {profile.name}!
+                      </span>{' '}
+                      ✨
+                    </h1>
+
+                    <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 font-semibold leading-relaxed">
+                      Ready to level up your rig today? Your animation sprint has 3 new keyframe goals, and mentor Dikshant posted redline notes on your cape collision physics.
+                    </p>
+
+                    {/* Today's Sprint Quest Pill Banner */}
+                    <div className="flex flex-wrap items-center gap-3 pt-2">
+                      <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#FEF08A] dark:bg-[#1E293B] text-xs sm:text-sm text-background-dark dark:text-white neo-border neo-shadow-sm">
+                        <span className="text-base">🎯</span>
+                        <span>
+                          <strong className="font-black text-background-dark dark:text-[#A3E635]">Today's Sprint:</strong> Export 3 walk-cycle keyframes in Blender (+120 XP)
                         </span>
                       </div>
-                      <span className="text-xs font-black text-primary-dark dark:text-[#A3E635]">
-                        {Math.min(100, Math.round((currentXp / studentProfileData.xpToNextLevel) * 100))}%
-                      </span>
-                    </div>
-                    <div className="w-full h-2.5 rounded-full bg-slate-200 dark:bg-slate-700 my-2 overflow-hidden border border-background-dark">
-                      <div
-                        className="h-full rounded-full bg-[#A3E635] transition-all duration-500 ease-out"
-                        style={{
-                          width: `${Math.min(100, (currentXp / studentProfileData.xpToNextLevel) * 100)}%`,
-                        }}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
-                      <span>{currentXp.toLocaleString()} XP</span>
-                      <span className="text-primary-dark dark:text-[#A3E635]">
-                        {studentProfileData.xpToNextLevel.toLocaleString()} XP to Lvl 7
-                      </span>
+
+                      <button
+                        type="button"
+                        onClick={handleCompleteSprint}
+                        className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-black neo-border transition-all cursor-pointer ${
+                          isSprintCompleted
+                            ? 'bg-[#FDE047] text-background-dark neo-shadow-sm cursor-default'
+                            : 'bg-[#A3E635] text-background-dark neo-shadow hover:-translate-y-0.5 active:translate-y-0'
+                        }`}
+                      >
+                        <span className="material-symbols-outlined text-[18px]">
+                          {isSprintCompleted ? 'check_circle' : 'play_arrow'}
+                        </span>
+                        <span>{isSprintCompleted ? 'Sprint Done!' : 'Start Sprint'}</span>
+                      </button>
                     </div>
                   </div>
 
-                  {/* Streak Counter */}
-                  <div className="p-3 rounded-xl bg-white dark:bg-[#182235] neo-border neo-shadow-sm flex flex-col justify-center">
-                    <div className="flex items-center gap-1 text-[#EF4444]">
-                      <span className="material-symbols-outlined text-[18px]">local_fire_department</span>
-                      <span className="text-[10px] uppercase font-black tracking-wide">Streak</span>
-                    </div>
-                    <span className="text-lg font-black text-background-dark dark:text-white mt-0.5">
-                      {studentProfileData.streakDays} Days
-                    </span>
-                    <span className="text-[10px] text-[#EF4444] font-bold">+50 XP Today</span>
-                  </div>
+                  {/* Right: Gamification Mosaic Stats Cards */}
+                  <div className="grid grid-cols-2 gap-3 min-w-72 lg:w-80">
+                    {/* Level Progress */}
+                    {(() => {
+                      const computedLevelNum = Math.floor(currentXp / 1000) + 1;
+                      const nextLevelThreshold = computedLevelNum * 1000;
+                      const currentLevelBase = (computedLevelNum - 1) * 1000;
+                      const progressPercent = Math.min(
+                        100,
+                        Math.max(0, Math.round(((currentXp - currentLevelBase) / 1000) * 100))
+                      );
 
-                  {/* Weekly Lessons Goal */}
-                  <div className="p-3 rounded-xl bg-white dark:bg-[#182235] neo-border neo-shadow-sm flex flex-col justify-center">
-                    <div className="flex items-center gap-1 text-primary-dark dark:text-[#A3E635]">
-                      <span className="material-symbols-outlined text-[18px]">check_circle</span>
-                      <span className="text-[10px] uppercase font-black tracking-wide">Weekly Jam</span>
+                      return (
+                        <div className="col-span-2 p-3.5 rounded-xl bg-white dark:bg-[#182235] neo-border neo-shadow-sm flex flex-col justify-between">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1.5">
+                              <span className="material-symbols-outlined text-primary-dark dark:text-[#A3E635] text-[20px] font-bold">
+                                military_tech
+                              </span>
+                              <span className="text-xs font-black text-background-dark dark:text-white">
+                                Lvl {computedLevelNum}
+                              </span>
+                            </div>
+                            <span className="text-xs font-black text-primary-dark dark:text-[#A3E635]">
+                              {progressPercent}%
+                            </span>
+                          </div>
+                          <div className="w-full h-2.5 rounded-full bg-slate-200 dark:bg-slate-700 my-2 overflow-hidden border border-background-dark">
+                            <div
+                              className="h-full rounded-full bg-[#A3E635] transition-all duration-500 ease-out"
+                              style={{
+                                width: `${progressPercent}%`,
+                              }}
+                            />
+                          </div>
+                          <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
+                            <span>{currentXp.toLocaleString()} XP</span>
+                            <span className="text-primary-dark dark:text-[#A3E635]">
+                              {nextLevelThreshold.toLocaleString()} XP to Lvl {computedLevelNum + 1}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })()}
+
+                    {/* Streak Counter */}
+                    <div className="p-3 rounded-xl bg-white dark:bg-[#182235] neo-border neo-shadow-sm flex flex-col justify-center">
+                      <div className="flex items-center gap-1 text-[#EF4444]">
+                        <span className="material-symbols-outlined text-[18px]">local_fire_department</span>
+                        <span className="text-[10px] uppercase font-black tracking-wide">Streak</span>
+                      </div>
+                      <span className="text-lg font-black text-background-dark dark:text-white mt-0.5">
+                        {profile.streakDays} Days
+                      </span>
+                      <span className="text-[10px] text-[#EF4444] font-bold">+50 XP Today</span>
                     </div>
-                    <span className="text-lg font-black text-background-dark dark:text-white mt-0.5">
-                      {studentProfileData.weeklyJamDone} of {studentProfileData.weeklyJamTotal}
-                    </span>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold">
-                      Lessons complete
-                    </span>
+
+                    {/* Weekly Lessons Goal */}
+                    <div className="p-3 rounded-xl bg-white dark:bg-[#182235] neo-border neo-shadow-sm flex flex-col justify-center">
+                      <div className="flex items-center gap-1 text-primary-dark dark:text-[#A3E635]">
+                        <span className="material-symbols-outlined text-[18px]">check_circle</span>
+                        <span className="text-[10px] uppercase font-black tracking-wide">Weekly Jam</span>
+                      </div>
+                      <span className="text-lg font-black text-background-dark dark:text-white mt-0.5">
+                        {profile.weeklyJamDone} of {profile.weeklyJamTotal}
+                      </span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold">
+                        Lessons complete
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </section>
           </RevealOnScroll>
 
@@ -780,7 +887,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                   </div>
 
                   <p className="text-xs text-slate-800 dark:text-slate-300 font-semibold leading-relaxed">
-                    You have <strong>{studentProfileData.mentorSyncCredits} mentor sync credits</strong> remaining for October. Get live 1-on-1 portfolio review or debug your rig topology directly.
+                    You have <strong>{profile.mentorSyncCredits} mentor sync credits</strong> remaining for October. Get live 1-on-1 portfolio review or debug your rig topology directly.
                   </p>
 
                   <button
@@ -804,16 +911,16 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                       Active Rig in Studio
                     </span>
                     <span className="text-[10px] bg-[#A3E635] text-background-dark neo-border px-2 py-0.5 rounded-full font-black">
-                      {studentProfileData.activeRigSoftware}
+                      {profile.activeRigSoftware}
                     </span>
                   </div>
                   <p className="text-sm font-bold text-background-dark dark:text-white truncate">
-                    {studentProfileData.activeRigName}
+                    {profile.activeRigName}
                   </p>
                   <div className="w-full h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden mt-1">
                     <div
                       className="h-full bg-[#A3E635] rounded-full"
-                      style={{ width: `${studentProfileData.activeRigProgress}%` }}
+                      style={{ width: `${profile.activeRigProgress}%` }}
                     />
                   </div>
                 </div>
@@ -855,13 +962,31 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
               </button>
             </div>
 
+            {/* Hidden native file input for genuine drag/drop/browse */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setSelectedFileName(file.name);
+                  showToast(`📁 Attached ${file.name}`);
+                }
+              }}
+            />
+
             <div
               className="border-2 border-dashed border-slate-400 dark:border-slate-700 rounded-xl p-8 text-center space-y-2 bg-slate-50 dark:bg-[#182235] cursor-pointer hover:border-primary-dark transition-colors"
               onClick={() => {
-                const sampleFiles = ['Cyber_Alley_Rig_v4.blend', 'Sakuga_Slash_Smear_v2.mp4', 'Character_Walk_Cycle.aep'];
-                const randomFile = sampleFiles[Math.floor(Math.random() * sampleFiles.length)];
-                setSelectedFileName(randomFile);
-                showToast(`📁 Attached ${randomFile}`);
+                if (fileInputRef.current) {
+                  fileInputRef.current.click();
+                } else {
+                  const sampleFiles = ['Cyber_Alley_Rig_v4.blend', 'Sakuga_Slash_Smear_v2.mp4', 'Character_Walk_Cycle.aep'];
+                  const randomFile = sampleFiles[Math.floor(Math.random() * sampleFiles.length)];
+                  setSelectedFileName(randomFile);
+                  showToast(`📁 Attached ${randomFile}`);
+                }
               }}
             >
               <span className="material-symbols-outlined text-4xl text-primary-dark dark:text-[#A3E635]">

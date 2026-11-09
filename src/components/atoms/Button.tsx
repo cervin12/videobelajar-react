@@ -31,7 +31,7 @@ const sizeClasses: Record<ButtonSize, string> = {
 export const Button: React.FC<ButtonProps> = ({
   variant = 'primary',
   size = 'md',
-  neoShadow: _neoShadow = false,
+  neoShadow = false,
   activeLift = true,
   iconOnly = false,
   className = '',
@@ -41,7 +41,7 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const isGhost = variant === 'ghost';
   const borderClass = isGhost ? '' : 'neo-border';
-  const shadowClass = '';
+  const shadowClass = neoShadow ? 'shadow-[3px_3px_0px_#0F172A] dark:shadow-[3px_3px_0px_#38BDF8]' : '';
   const liftClass =
     activeLift && !disabled
       ? 'hover:-translate-y-0.5 active:translate-y-0'

@@ -2,10 +2,11 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Header } from '../components/organisms/Header';
 import { Sidebar } from '../components/organisms/Sidebar';
 import { Footer } from '../components/organisms/Footer';
-import { RevealOnScroll } from '../components/atoms/RevealOnScroll';
+import { RevealOnScroll, Skeleton } from '../components/atoms';
 import type { Note, NoteColor, NoteChecklistItem } from '../types/notes';
-import { initialNotesData } from '../data/notesData';
-import { studentProfileData } from '../data/studentDashboardData';
+import type { StudentProfile } from '../types/studentDashboard';
+import { notesService, studentService, authService } from '../services';
+import { studentProfileData as defaultProfile } from '../data/studentDashboardData';
 
 export interface NotesPageProps {
   onNavigateToCourses?: () => void;
@@ -63,38 +64,48 @@ export const NotesPage: React.FC<NotesPageProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string>('all');
 
-  // Notes state
-  const [notes, setNotes] = useState<Note[]>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('skillpop-notes');
-      if (saved) {
-        try {
-          return JSON.parse(saved);
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    }
-    return initialNotesData;
-  });
+  // Student profile state seeded via studentService
+  const [profile, setProfile] = useState<StudentProfile>(defaultProfile);
 
-  // Sync to localStorage
+  // Notes state & loading seeded via notesService
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  // Fetch initial notes and user profile from MSW-backed services
   useEffect(() => {
-    try {
-      localStorage.setItem('skillpop-notes', JSON.stringify(notes));
-    } catch (e) {
-      console.error(e);
-    }
-  }, [notes]);
+    let isMounted = true;
+    Promise.all([
+      notesService.getNotes().catch(() => []),
+      studentService.getProfile().catch(() => defaultProfile),
+    ]).then(([fetchedNotes, fetchedProfile]) => {
+      if (isMounted) {
+        setNotes(fetchedNotes);
+        if (fetchedProfile) setProfile(fetchedProfile);
+        setLoading(false);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Toast notifications
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const toastIdRef = React.useRef(0);
+
   const showToast = (text: string) => {
-    const id = Date.now() + Math.random();
+    toastIdRef.current += 1;
+    const id = toastIdRef.current;
     setToasts((prev) => [...prev, { id, text }]);
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, 3500);
+  };
+
+  const handleLogout = async () => {
+    await authService.logout();
+    showToast('👋 Signed out of Creator Lab. See you soon!');
+    if (onNavigateToAuth) onNavigateToAuth();
   };
 
   // Quick creator state
@@ -110,13 +121,41 @@ export const NotesPage: React.FC<NotesPageProps> = ({
 
   // Edit Modal State
   const [editingNote, setEditingNote] = useState<Note | null>(null);
+  const [modalChecklistText, setModalChecklistText] = useState('');
+  const [modalTagsText, setModalTagsText] = useState('');
+
+  const openEditModal = (note: Note) => {
+    setEditingNote(note);
+    setModalTagsText(note.tags ? note.tags.join(', ') : '');
+    setModalChecklistText('');
+  };
+
+  // Lock body scroll and listen for Escape key when modal is open
+  useEffect(() => {
+    if (editingNote) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setEditingNote(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [editingNote]);
 
   // Add checklist item to creator
   const handleAddCreatorChecklistItem = () => {
     if (!newChecklistText.trim()) return;
+    toastIdRef.current += 1;
+    const newId = `c-item-${toastIdRef.current}`;
     setNewChecklistItems((prev) => [
       ...prev,
-      { id: `c-${Date.now()}-${Math.random()}`, text: newChecklistText.trim(), completed: false },
+      { id: newId, text: newChecklistText.trim(), completed: false },
     ]);
     setNewChecklistText('');
   };
@@ -126,96 +165,161 @@ export const NotesPage: React.FC<NotesPageProps> = ({
     setNewChecklistItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  // Handle Save New Note
-  const handleSaveNote = (e: React.FormEvent) => {
+  // Handle Save New Note via notesService
+  const handleSaveNote = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTitle.trim() && !newContent.trim() && newChecklistItems.length === 0) {
+    
+    // Auto-commit pending checklist input if typed
+    const finalChecklist = [...newChecklistItems];
+    if (isChecklistMode && newChecklistText.trim()) {
+      toastIdRef.current += 1;
+      finalChecklist.push({
+        id: `c-item-${toastIdRef.current}`,
+        text: newChecklistText.trim(),
+        completed: false,
+      });
+      setNewChecklistText('');
+    }
+
+    if (!newTitle.trim() && !newContent.trim() && finalChecklist.length === 0) {
       showToast('⚠️ Please enter a title or note content.');
       return;
     }
 
-    const parsedTags = newTags
+    const rawTags = newTags
       .split(',')
       .map((t) => t.trim())
       .filter(Boolean)
       .map((t) => (t.startsWith('#') ? t : `#${t}`));
+    const parsedTags = Array.from(new Set(rawTags));
 
-    const createdNote: Note = {
-      id: `note-${Date.now()}`,
+    const payload = {
       title: newTitle.trim() || 'Untitled Note',
       content: newContent.trim(),
-      checklist: isChecklistMode && newChecklistItems.length > 0 ? newChecklistItems : undefined,
+      checklist: isChecklistMode && finalChecklist.length > 0 ? finalChecklist : undefined,
       tags: parsedTags.length > 0 ? parsedTags : ['#StudyNotes'],
       pinned: newPinned,
       color: newColor,
-      createdAt: 'Just now',
     };
 
-    setNotes((prev) => [createdNote, ...prev]);
-    setSaveStatus('Saved just now');
-    setTimeout(() => setSaveStatus(''), 2500);
+    setSaveStatus('Saving to mock server...');
+    try {
+      const createdNote = await notesService.createNote(payload);
+      setNotes((prev) => [createdNote, ...prev]);
+      setSaveStatus('Saved just now');
+      setTimeout(() => setSaveStatus(''), 2500);
 
-    // Reset inputs
-    setNewTitle('');
-    setNewContent('');
-    setNewPinned(false);
-    setNewColor('yellow');
-    setNewChecklistItems([]);
-    setIsChecklistMode(false);
-    showToast(`📝 Note "${createdNote.title}" created successfully!`);
+      // Reset inputs
+      setNewTitle('');
+      setNewContent('');
+      setNewPinned(false);
+      setNewColor('yellow');
+      setNewChecklistItems([]);
+      setIsChecklistMode(false);
+      showToast(`📝 Note "${createdNote.title}" created successfully!`);
+    } catch (err) {
+      console.error('Failed to create note:', err);
+      showToast('❌ Failed to save note.');
+      setSaveStatus('');
+    }
   };
 
-  // Delete note
-  const handleDeleteNote = (id: string, e?: React.MouseEvent) => {
+  // Delete note via notesService
+  const handleDeleteNote = async (id: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     const noteToDelete = notes.find((n) => n.id === id);
     setNotes((prev) => prev.filter((n) => n.id !== id));
     showToast(`🗑️ Note "${noteToDelete?.title || 'Note'}" deleted.`);
+
+    try {
+      await notesService.deleteNote(id);
+    } catch (err) {
+      console.error('Failed to delete note:', err);
+      if (noteToDelete) {
+        setNotes((prev) => [noteToDelete, ...prev]);
+        showToast('❌ Failed to delete note on server.');
+      }
+    }
   };
 
-  // Toggle pin
-  const handleTogglePin = (id: string, e?: React.MouseEvent) => {
+  // Toggle pin via notesService
+  const handleTogglePin = async (id: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
+    const target = notes.find((n) => n.id === id);
+    if (!target) return;
+    const nextPinned = !target.pinned;
+
     setNotes((prev) =>
-      prev.map((n) => {
-        if (n.id === id) {
-          const nextPinned = !n.pinned;
-          showToast(nextPinned ? '📌 Note pinned to top!' : '📌 Note unpinned.');
-          return { ...n, pinned: nextPinned };
-        }
-        return n;
-      })
+      prev.map((n) => (n.id === id ? { ...n, pinned: nextPinned } : n))
     );
+    showToast(nextPinned ? '📌 Note pinned to top!' : '📌 Note unpinned.');
+
+    try {
+      await notesService.updateNote(id, { pinned: nextPinned });
+    } catch (err) {
+      console.error('Failed to update note pin status:', err);
+    }
   };
 
-  // Toggle checklist checkbox
-  const handleToggleCheckbox = (noteId: string, checkId: string, e: React.MouseEvent) => {
+  // Toggle checklist checkbox via notesService
+  const handleToggleCheckbox = async (noteId: string, checkId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    setNotes((prev) =>
-      prev.map((n) => {
-        if (n.id === noteId && n.checklist) {
-          return {
-            ...n,
-            checklist: n.checklist.map((item) =>
-              item.id === checkId ? { ...item, completed: !item.completed } : item
-            ),
-          };
-        }
-        return n;
-      })
+    const target = notes.find((n) => n.id === noteId);
+    if (!target || !target.checklist) return;
+
+    const nextChecklist = target.checklist.map((item) =>
+      item.id === checkId ? { ...item, completed: !item.completed } : item
     );
+
+    setNotes((prev) =>
+      prev.map((n) => (n.id === noteId ? { ...n, checklist: nextChecklist } : n))
+    );
+
+    try {
+      await notesService.updateNote(noteId, { checklist: nextChecklist });
+    } catch (err) {
+      console.error('Failed to update checklist item:', err);
+    }
   };
 
-  // Save edited note
-  const handleUpdateNote = (e: React.FormEvent) => {
+  // Save edited note via notesService
+  const handleUpdateNote = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingNote) return;
 
+    // Parse modal tags
+    const rawModalTags = modalTagsText
+      .split(',')
+      .map((t) => t.trim())
+      .filter(Boolean)
+      .map((t) => (t.startsWith('#') ? t : `#${t}`));
+    const parsedModalTags = Array.from(new Set(rawModalTags));
+
+    const previousNote = notes.find((n) => n.id === editingNote.id);
+    const updatedData: Note = {
+      ...editingNote,
+      tags: parsedModalTags.length > 0 ? parsedModalTags : ['#StudyNotes'],
+      createdAt: 'Updated just now',
+    };
+
     setNotes((prev) =>
-      prev.map((n) => (n.id === editingNote.id ? { ...editingNote, createdAt: 'Updated just now' } : n))
+      prev.map((n) => (n.id === editingNote.id ? updatedData : n))
     );
     showToast(`✅ Note "${editingNote.title}" updated.`);
+    const noteId = editingNote.id;
     setEditingNote(null);
+
+    try {
+      await notesService.updateNote(noteId, updatedData);
+    } catch (err) {
+      console.error('Failed to update note:', err);
+      if (previousNote) {
+        setNotes((prev) =>
+          prev.map((n) => (n.id === noteId ? previousNote : n))
+        );
+      }
+      showToast('❌ Failed to update note on server.');
+    }
   };
 
   // Available unique tags for filtering
@@ -258,7 +362,8 @@ export const NotesPage: React.FC<NotesPageProps> = ({
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
         activePath="study-notes"
-        currentXp={studentProfileData.currentXp}
+        currentXp={profile.currentXp}
+        onLogout={handleLogout}
         onNavigate={(page) => {
           if (page === 'courses' && onNavigateToCourses) {
             onNavigateToCourses();
@@ -276,9 +381,9 @@ export const NotesPage: React.FC<NotesPageProps> = ({
         <Header
           variant="dashboard"
           onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
-          streakDays={studentProfileData.streakDays}
-          xp={studentProfileData.currentXp}
-          level="Lvl 6"
+          streakDays={profile.streakDays}
+          xp={profile.currentXp}
+          level={profile.level}
           isDark={isDark}
           onToggleTheme={toggleTheme}
           searchQuery={searchQuery}
@@ -506,6 +611,46 @@ export const NotesPage: React.FC<NotesPageProps> = ({
               </div>
             </div>
 
+            {/* Skeleton Loading Cards */}
+            {loading && notes.length === 0 && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 font-black text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  <span className="material-symbols-outlined text-[16px] animate-spin text-primary">sync</span>
+                  <span>Syncing study notes from mock database...</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <div
+                      key={i}
+                      className="bg-white dark:bg-[#182235] neo-border-3 rounded-2xl p-5 flex flex-col justify-between neo-shadow space-y-4 min-h-47.5"
+                    >
+                      <div className="space-y-3">
+                        <div className="flex items-start justify-between gap-3">
+                          <Skeleton className="h-5 w-3/5" />
+                          <Skeleton className="h-5 w-5" variant="rounded" />
+                        </div>
+                        <Skeleton className="h-3.5 w-full" />
+                        <Skeleton className="h-3.5 w-4/5" />
+                        <div className="flex gap-2 pt-2">
+                          <Skeleton className="h-5 w-16" variant="rounded" />
+                          <Skeleton className="h-5 w-20" variant="rounded" />
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-slate-700/60">
+                        <Skeleton className="h-3 w-20" />
+                        <div className="flex gap-1.5">
+                          <Skeleton className="h-6 w-6" variant="rounded" />
+                          <Skeleton className="h-6 w-6" variant="rounded" />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* PINNED NOTES SECTION */}
             {pinnedNotes.length > 0 && (
               <div className="space-y-4">
@@ -520,7 +665,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({
                     return (
                       <div
                         key={note.id}
-                        onClick={() => setEditingNote(note)}
+                        onClick={() => openEditModal(note)}
                         className={`group ${colorStyle.light} ${colorStyle.dark} neo-border-3 rounded-2xl p-5 flex flex-col justify-between neo-shadow hover:-translate-y-1 transition-all cursor-pointer relative`}
                       >
                         <div className="space-y-3">
@@ -606,7 +751,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({
                               type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setEditingNote(note);
+                                openEditModal(note);
                               }}
                               className="p-1 rounded neo-border bg-white dark:bg-[#182235] hover:bg-[#FDE047] text-background-dark dark:text-white hover:text-slate-900 transition-colors cursor-pointer"
                               title="Edit Note"
@@ -664,7 +809,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({
                     return (
                       <div
                         key={note.id}
-                        onClick={() => setEditingNote(note)}
+                        onClick={() => openEditModal(note)}
                         className={`group ${colorStyle.light} ${colorStyle.dark} neo-border-3 rounded-2xl p-5 flex flex-col justify-between neo-shadow hover:-translate-y-1 transition-all cursor-pointer relative`}
                       >
                         <div className="space-y-3">
@@ -745,7 +890,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({
                               type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setEditingNote(note);
+                                openEditModal(note);
                               }}
                               className="p-1 rounded neo-border bg-white dark:bg-[#182235] hover:bg-[#FDE047] text-background-dark dark:text-white hover:text-slate-900 transition-colors cursor-pointer"
                               title="Edit Note"
@@ -824,11 +969,11 @@ export const NotesPage: React.FC<NotesPageProps> = ({
                 </div>
 
                 {/* Checklist editor in modal */}
-                {editingNote.checklist && editingNote.checklist.length > 0 && (
-                  <div className="space-y-2">
-                    <label className="text-xs font-black uppercase text-slate-600 dark:text-slate-400 block">
-                      Checklist Items
-                    </label>
+                <div className="space-y-2">
+                  <label className="text-xs font-black uppercase text-slate-600 dark:text-slate-400 block">
+                    Checklist Items {editingNote.checklist && editingNote.checklist.length > 0 ? `(${editingNote.checklist.length})` : ''}
+                  </label>
+                  {editingNote.checklist && editingNote.checklist.length > 0 && (
                     <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
                       {editingNote.checklist.map((item, idx) => (
                         <div key={item.id} className="flex items-center gap-2">
@@ -867,8 +1012,72 @@ export const NotesPage: React.FC<NotesPageProps> = ({
                         </div>
                       ))}
                     </div>
+                  )}
+
+                  {/* Add new checklist item input inside modal */}
+                  <div className="flex items-center gap-2 pt-1">
+                    <input
+                      type="text"
+                      value={modalChecklistText}
+                      onChange={(e) => setModalChecklistText(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          if (modalChecklistText.trim()) {
+                            toastIdRef.current += 1;
+                            const newItem: NoteChecklistItem = {
+                              id: `c-${Date.now()}-${toastIdRef.current}`,
+                              text: modalChecklistText.trim(),
+                              completed: false,
+                            };
+                            setEditingNote({
+                              ...editingNote,
+                              checklist: [...(editingNote.checklist || []), newItem],
+                            });
+                            setModalChecklistText('');
+                          }
+                        }
+                      }}
+                      placeholder="Add checklist item and press Enter..."
+                      className="flex-1 text-xs px-2.5 py-1.5 rounded-lg neo-border bg-slate-50 dark:bg-[#111A2E] text-background-dark dark:text-white focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (modalChecklistText.trim()) {
+                          toastIdRef.current += 1;
+                          const newItem: NoteChecklistItem = {
+                            id: `c-${Date.now()}-${toastIdRef.current}`,
+                            text: modalChecklistText.trim(),
+                            completed: false,
+                          };
+                          setEditingNote({
+                            ...editingNote,
+                            checklist: [...(editingNote.checklist || []), newItem],
+                          });
+                          setModalChecklistText('');
+                        }
+                      }}
+                      className="px-3 py-1.5 rounded-lg bg-[#A3E635] text-background-dark neo-border text-xs font-black cursor-pointer"
+                    >
+                      Add
+                    </button>
                   </div>
-                )}
+                </div>
+
+                {/* Tags editor in modal */}
+                <div>
+                  <label className="text-xs font-black uppercase text-slate-600 dark:text-slate-400 block mb-1">
+                    Tags (comma separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={modalTagsText}
+                    onChange={(e) => setModalTagsText(e.target.value)}
+                    className="w-full rounded-xl neo-border p-2.5 text-xs font-semibold bg-slate-50 dark:bg-[#111A2E] text-background-dark dark:text-white focus:outline-none"
+                    placeholder="#Blender, #Shaders, #StudyNotes"
+                  />
+                </div>
 
                 {/* Color tint & Pin in modal */}
                 <div className="flex flex-wrap items-center justify-between gap-3 pt-2">

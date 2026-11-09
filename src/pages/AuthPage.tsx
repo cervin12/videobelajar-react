@@ -1,22 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { ThemeToggle } from '../components/molecules/ThemeToggle';
 import { BrandLogo } from '../components/atoms/BrandLogo';
+import { authService } from '../services';
 import userAvatar from '../assets/user-avatar.jpg';
 
 export interface AuthPageProps {
   onNavigateToCourses?: () => void;
+  onNavigateToDashboard?: () => void;
 }
 
 export type AuthMode = 'register' | 'login';
 export type CreativeTrack = '3d' | 'motion' | 'uiux' | 'code' | '2d' | 'all';
 
+interface ToastMessage {
+  id: number;
+  text: string;
+}
+
 export const AuthPage: React.FC<AuthPageProps> = ({
   onNavigateToCourses,
+  onNavigateToDashboard,
 }) => {
   // Theme state synced with localStorage
   const [isDark, setIsDark] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem('skillpop-theme') || localStorage.getItem('skillpop_theme');
+      const savedTheme = localStorage.getItem('skillpop-theme');
       if (savedTheme !== null) {
         return savedTheme === 'dark';
       }
@@ -28,12 +36,12 @@ export const AuthPage: React.FC<AuthPageProps> = ({
   useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add('dark');
+      document.body.classList.add('dark');
       localStorage.setItem('skillpop-theme', 'dark');
-      localStorage.setItem('skillpop_theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
+      document.body.classList.remove('dark');
       localStorage.setItem('skillpop-theme', 'light');
-      localStorage.setItem('skillpop_theme', 'light');
     }
   }, [isDark]);
 
@@ -46,16 +54,75 @@ export const AuthPage: React.FC<AuthPageProps> = ({
   const [selectedTrack, setSelectedTrack] = useState<CreativeTrack>('3d');
   const [agreedTerms, setAgreedTerms] = useState<boolean>(true);
   const [rememberMe, setRememberMe] = useState<boolean>(true);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Toast notifications replacing window.alert
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const toastIdRef = React.useRef(0);
+
+  const showToast = (text: string) => {
+    toastIdRef.current += 1;
+    const id = toastIdRef.current;
+    setToasts((prev) => [...prev, { id, text }]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, 3500);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (authMode === 'register') {
-      alert(`Welcome to SkillPop!, ${fullName || 'Creator'}! Your 7-day free trial is active. Level 1 Unlocked ⚡`);
-    } else {
-      alert(`Welcome back, ${email || 'Creator'}! Loading courses... 🚀`);
+    setIsSubmitting(true);
+    setErrorMessage('');
+
+    if (password.length < 6) {
+      setErrorMessage('Password must be at least 6 characters long.');
+      setIsSubmitting(false);
+      return;
     }
-    if (onNavigateToCourses) {
-      onNavigateToCourses();
+
+    try {
+      if (authMode === 'register') {
+        const res = await authService.register({
+          fullName: fullName.trim() || 'Creator',
+          email: email.trim(),
+          password,
+          selectedTrack,
+        });
+
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('skillpop_token', res.token);
+          localStorage.setItem('skillpop_user', JSON.stringify(res.user));
+        }
+
+        showToast(`🎉 Welcome to SkillPop, ${res.user.name || fullName || 'Creator'}! 7-day trial active.`);
+      } else {
+        const res = await authService.login({
+          email: email.trim(),
+          password,
+        });
+
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('skillpop_token', res.token);
+          localStorage.setItem('skillpop_user', JSON.stringify(res.user));
+        }
+
+        showToast(`🚀 Welcome back, ${res.user.name || email || 'Creator'}! Loading studio...`);
+      }
+
+      setTimeout(() => {
+        if (onNavigateToDashboard) {
+          onNavigateToDashboard();
+        } else if (onNavigateToCourses) {
+          onNavigateToCourses();
+        }
+      }, 700);
+    } catch (err: unknown) {
+      console.error('Auth error:', err);
+      const msg = err instanceof Error ? err.message : 'Authentication failed. Please check your details.';
+      setErrorMessage(msg);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -98,7 +165,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
           <div className="flex items-center gap-2 border-l-2 border-neutral-200 dark:border-slate-700 pl-3">
             <button
               type="button"
-              onClick={() => alert('Need help? Join the SkillPop 24/7 Discord guild or email support@skillpop.dev')}
+              onClick={() => showToast('💬 Need help? Join the SkillPop 24/7 Discord guild or email support@skillpop.dev')}
               className="w-8 h-8 rounded-lg border-2 border-[#1A0914] dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center text-xs font-black text-[#1A0914] dark:text-slate-100 shadow-[2px_2px_0px_#1A0914] dark:shadow-[2px_2px_0px_#030712] hover:translate-y-0.5 active:translate-y-1 transition-transform cursor-pointer"
               title="Help"
             >
@@ -256,7 +323,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                   <button
                     type="button"
-                    onClick={() => alert('Google Sign-In: Simulation successful 🚀')}
+                    onClick={() => showToast('🚀 Google Sign-In simulated successfully!')}
                     className="flex items-center justify-center gap-2 py-2.5 px-3 bg-white dark:bg-[#1e293b] hover:bg-neutral-50 dark:hover:bg-slate-700 border-2 border-[#1A0914] dark:border-slate-700 rounded-xl text-xs font-bold text-[#1A0914] dark:text-white shadow-[2px_2px_0px_#1A0914] dark:shadow-[2px_2px_0px_#030712] hover:translate-y-0.5 transition-all cursor-pointer"
                   >
                     <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -270,7 +337,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
 
                   <button
                     type="button"
-                    onClick={() => alert('GitHub Sign-In: Simulation successful 🚀')}
+                    onClick={() => showToast('🚀 GitHub Sign-In simulated successfully!')}
                     className="flex items-center justify-center gap-2 py-2.5 px-3 bg-white dark:bg-[#1e293b] hover:bg-neutral-50 dark:hover:bg-slate-700 border-2 border-[#1A0914] dark:border-slate-700 rounded-xl text-xs font-bold text-[#1A0914] dark:text-white shadow-[2px_2px_0px_#1A0914] dark:shadow-[2px_2px_0px_#030712] hover:translate-y-0.5 transition-all cursor-pointer"
                   >
                     <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -281,7 +348,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
 
                   <button
                     type="button"
-                    onClick={() => alert('Discord Sign-In: Simulation successful 🚀')}
+                    onClick={() => showToast('🚀 Discord Sign-In simulated successfully!')}
                     className="flex items-center justify-center gap-2 py-2.5 px-3 bg-white dark:bg-[#1e293b] hover:bg-neutral-50 dark:hover:bg-slate-700 border-2 border-[#1A0914] dark:border-slate-700 rounded-xl text-xs font-bold text-[#1A0914] dark:text-white shadow-[2px_2px_0px_#1A0914] dark:shadow-[2px_2px_0px_#030712] hover:translate-y-0.5 transition-all cursor-pointer"
                   >
                     <svg className="w-4 h-4 fill-[#5865F2]" viewBox="0 0 24 24">
@@ -292,7 +359,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
 
                   <button
                     type="button"
-                    onClick={() => alert('Apple Sign-In: Simulation successful 🚀')}
+                    onClick={() => showToast('🚀 Apple Sign-In simulated successfully!')}
                     className="flex items-center justify-center gap-2 py-2.5 px-3 bg-white dark:bg-[#1e293b] hover:bg-neutral-50 dark:hover:bg-slate-700 border-2 border-[#1A0914] dark:border-slate-700 rounded-xl text-xs font-bold text-[#1A0914] dark:text-white shadow-[2px_2px_0px_#1A0914] dark:shadow-[2px_2px_0px_#030712] hover:translate-y-0.5 transition-all cursor-pointer"
                   >
                     <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -357,7 +424,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
                     {authMode === 'login' && (
                       <button
                         type="button"
-                        onClick={() => alert('Password reset instructions sent to your email!')}
+                        onClick={() => showToast('📩 Password reset instructions sent to your email!')}
                         className="text-xs font-bold text-primary dark:text-pop-lime hover:underline cursor-pointer"
                       >
                         Forgot password?
@@ -442,19 +509,34 @@ export const AuthPage: React.FC<AuthPageProps> = ({
                   )}
                 </div>
 
+                {errorMessage && (
+                  <div className="p-3 bg-red-100 dark:bg-red-950/60 border-2 border-red-600 rounded-xl text-xs font-bold text-red-700 dark:text-red-300 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-sm font-black">error</span>
+                    <span>{errorMessage}</span>
+                  </div>
+                )}
+
                 <button
                   type="submit"
-                  className={`w-full mt-3 py-3.5 px-6 rounded-2xl font-black text-base border-2 border-[#1A0914] shadow-[4px_4px_0px_#1A0914] hover:shadow-[1px_1px_0px_#1A0914] hover:translate-x-0.5 hover:translate-y-0.5 active:translate-x-1 active:translate-y-1 transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                  disabled={isSubmitting}
+                  className={`w-full mt-3 py-3.5 px-6 rounded-2xl font-black text-base border-2 border-[#1A0914] shadow-[4px_4px_0px_#1A0914] hover:shadow-[1px_1px_0px_#1A0914] hover:translate-x-0.5 hover:translate-y-0.5 active:translate-x-1 active:translate-y-1 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ${
                     authMode === 'register'
                       ? 'bg-pop-lime text-[#1A0914]'
                       : 'bg-pop-yellow text-[#1A0914]'
                   }`}
                 >
-                  <span>
-                    {authMode === 'register'
-                      ? 'Claim Your Free Pass & Start Learning 🚀'
-                      : 'Jump Back In ⚡'}
-                  </span>
+                  {isSubmitting ? (
+                    <span className="flex items-center gap-2">
+                      <span className="material-symbols-outlined animate-spin text-sm">sync</span>
+                      <span>Processing...</span>
+                    </span>
+                  ) : (
+                    <span>
+                      {authMode === 'register'
+                        ? 'Claim Your Free Pass & Start Learning 🚀'
+                        : 'Jump Back In ⚡'}
+                    </span>
+                  )}
                 </button>
               </form>
             </div>
@@ -475,6 +557,18 @@ export const AuthPage: React.FC<AuthPageProps> = ({
           </div>
         </div>
       </main>
+
+      {/* Toast Notification Container */}
+      <div className="fixed top-20 right-6 z-50 flex flex-col gap-2 pointer-events-none">
+        {toasts.map((toast) => (
+          <div
+            key={toast.id}
+            className="px-4 py-2.5 rounded-xl bg-[#1A0914] text-white dark:bg-white dark:text-[#1A0914] text-xs font-black neo-border shadow-[3px_3px_0px_#A3E635] pointer-events-auto flex items-center gap-2 animate-bounce-short"
+          >
+            <span>{toast.text}</span>
+          </div>
+        ))}
+      </div>
 
       {/* Mini Footer */}
       <footer className="w-full border-t-2 border-[#1A0914] dark:border-slate-800 bg-white dark:bg-[#0d111d] py-4 px-6 text-xs text-neutral-600 dark:text-slate-400 font-semibold transition-colors duration-200">

@@ -5,3 +5,4 @@ export * from './Avatar';
 export * from './Rating';
 export * from './BrandLogo';
 export * from './RevealOnScroll';
+export * from './Skeleton';

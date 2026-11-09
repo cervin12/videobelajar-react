@@ -8,6 +8,7 @@ export type NoteColor = 'yellow' | 'green' | 'purple' | 'orange' | 'blue' | 'def
 
 export interface Note {
   id: string;
+  userId?: string;
   title: string;
   content: string;
   checklist?: NoteChecklistItem[];

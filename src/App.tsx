@@ -81,6 +81,7 @@ function App() {
       {currentPage === 'auth' && (
         <AuthPage
           onNavigateToCourses={() => navigateTo('courses')}
+          onNavigateToDashboard={() => navigateTo('dashboard')}
         />
       )}
 

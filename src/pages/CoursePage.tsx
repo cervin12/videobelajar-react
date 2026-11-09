@@ -75,6 +75,15 @@ export const CoursePage: React.FC<CoursePageProps> = ({
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 8;
 
+  // Helper to convert duration string (e.g. '18h 40m', '45m', '2h') to total minutes
+  const parseDurationToMinutes = (durationStr: string): number => {
+    const hoursMatch = durationStr.match(/(\d+)\s*h/i);
+    const minutesMatch = durationStr.match(/(\d+)\s*m/i);
+    const hours = hoursMatch ? parseInt(hoursMatch[1], 10) : 0;
+    const minutes = minutesMatch ? parseInt(minutesMatch[1], 10) : 0;
+    return hours * 60 + minutes;
+  };
+
   // 5. Filter & Sort Execution
   const filteredCourses = useMemo(() => {
     return coursesData.filter((course) => {
@@ -111,27 +120,25 @@ export const CoursePage: React.FC<CoursePageProps> = ({
         return b.rating - a.rating;
       }
       if (selectedSort === 'duration') {
-        return parseInt(b.duration) - parseInt(a.duration);
+        return parseDurationToMinutes(b.duration) - parseDurationToMinutes(a.duration);
       }
       if (selectedSort === 'newest') {
-        return b.id.localeCompare(a.id);
+        const numA = parseInt(a.id.replace(/\D/g, ''), 10) || 0;
+        const numB = parseInt(b.id.replace(/\D/g, ''), 10) || 0;
+        return numB - numA;
       }
       // 'trending' default
       return 0;
     });
   }, [searchQuery, selectedDiscipline, selectedSoftware, selectedLevel, selectedSort]);
 
-  // Reset page when filters change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, selectedDiscipline, selectedSoftware, selectedLevel, selectedSort]);
-
   // Paginated Courses
   const totalPages = Math.ceil(filteredCourses.length / itemsPerPage) || 1;
+  const safeCurrentPage = Math.min(currentPage, totalPages);
   const paginatedCourses = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
+    const start = (safeCurrentPage - 1) * itemsPerPage;
     return filteredCourses.slice(start, start + itemsPerPage);
-  }, [filteredCourses, currentPage, itemsPerPage]);
+  }, [filteredCourses, safeCurrentPage, itemsPerPage]);
 
   const handleResetFilters = () => {
     setSearchQuery('');
@@ -142,16 +149,29 @@ export const CoursePage: React.FC<CoursePageProps> = ({
     setCurrentPage(1);
   };
 
+  // Toast state
+  const [toasts, setToasts] = useState<{ id: number; text: string }[]>([]);
+  const toastIdRef = React.useRef(0);
+
+  const showToast = (text: string) => {
+    toastIdRef.current += 1;
+    const id = toastIdRef.current;
+    setToasts((prev) => [...prev, { id, text }]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, 3500);
+  };
+
   const handleEnrollCourse = (course: Course) => {
-    alert(`🎉 Enrolling in "${course.title}" for $${course.price}!`);
+    showToast(`🎉 Enrolled in "${course.title}"! Course added to My Learning.`);
   };
 
   const handleEnrollSpotlight = () => {
-    alert(`⚡ Enrolling in Featured Cohort: "${featuredCourseData.title}"!`);
+    showToast(`⚡ Enrolled in Featured Cohort: "${featuredCourseData.title}"!`);
   };
 
   const handlePreviewSpotlight = () => {
-    alert(`📺 Opening Syllabus Preview for "${featuredCourseData.title}"!`);
+    showToast(`📺 Opened Syllabus Preview for "${featuredCourseData.title}"!`);
   };
 
   return (
@@ -238,6 +258,18 @@ export const CoursePage: React.FC<CoursePageProps> = ({
           </div>
         </div>
       </main>
+
+      {/* Toast Notification Container */}
+      <div className="fixed top-24 right-6 z-50 flex flex-col gap-2 pointer-events-none">
+        {toasts.map((toast) => (
+          <div
+            key={toast.id}
+            className="px-4 py-2.5 rounded-xl bg-background-dark text-white dark:bg-white dark:text-background-dark text-xs font-black neo-border shadow-[3px_3px_0px_#A3E635] pointer-events-auto flex items-center gap-2 animate-bounce-short"
+          >
+            <span>{toast.text}</span>
+          </div>
+        ))}
+      </div>
 
       {/* 3. Footer Organism */}
       <RevealOnScroll variant="fade-up" duration={600}>

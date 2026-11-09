@@ -20,9 +20,9 @@ export const Avatar: React.FC<AvatarProps> = ({
   alt,
   size = 'md',
   className = '',
-  shadow: _shadow = false,
+  shadow = false,
 }) => {
-  const shadowClass = '';
+  const shadowClass = shadow ? 'shadow-[2px_2px_0px_#0F172A]' : '';
 
   return (
     <img

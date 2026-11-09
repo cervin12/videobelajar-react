@@ -7,6 +7,7 @@ export interface SidebarProps {
   onClose: () => void;
   activePath?: string;
   onNavigate?: (page: 'courses' | 'dashboard' | 'notes' | 'auth') => void;
+  onLogout?: () => void;
   currentXp?: number;
 }
 
@@ -104,7 +105,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onClose,
   activePath = 'dashboard',
   onNavigate,
+  onLogout,
+  currentXp,
 }) => {
+  // Lock body scroll on mobile and support Escape key
+  React.useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    if (window.innerWidth < 1024) {
+      document.body.style.overflow = 'hidden';
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   const handleItemClick = (item: NavItemConfig) => {
     if (item.action === 'navigate_dashboard' && onNavigate) {
       onNavigate('dashboard');
@@ -116,6 +140,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       const el = document.getElementById(item.targetId);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth' });
+      } else if (onNavigate) {
+        onNavigate('dashboard');
+        setTimeout(() => {
+          const target = document.getElementById(item.targetId!);
+          if (target) target.scrollIntoView({ behavior: 'smooth' });
+        }, 150);
       }
     }
     // Auto-close drawer on mobile
@@ -242,6 +272,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
               );
             })}
           </nav>
+
+          {/* Sign Out Action */}
+          {onLogout && (
+            <div className="px-4 pt-3 pb-2">
+              <button
+                type="button"
+                onClick={() => {
+                  onLogout();
+                  if (window.innerWidth < 1024) onClose();
+                }}
+                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl border-2 border-red-500/30 dark:border-red-500/40 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all font-bold text-xs cursor-pointer select-none text-left w-full group shadow-[1.5px_1.5px_0px_#EF4444]"
+              >
+                <div className="flex items-center gap-2.5">
+                  <span className="material-symbols-outlined text-[20px] leading-none group-hover:-translate-x-0.5 transition-transform">
+                    logout
+                  </span>
+                  <span>Sign Out</span>
+                </div>
+                <span className="text-[10px] font-black uppercase px-1.5 py-0.5 rounded border border-red-400 bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300">
+                  Exit
+                </span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Bottom: Active Rig Status card */}
@@ -252,7 +306,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 Active Rig
               </span>
               <span className="text-[10px] bg-[#A3E635] text-background-dark border border-background-dark px-1.5 py-0.5 rounded-full font-black">
-                Blender 4.2
+                {currentXp !== undefined ? `${currentXp.toLocaleString()} XP` : 'Blender 4.2'}
               </span>
             </div>
             <p className="text-xs font-bold text-background-dark dark:text-white leading-snug truncate">
