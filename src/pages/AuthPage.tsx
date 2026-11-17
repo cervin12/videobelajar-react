@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ThemeToggle } from '../components/molecules/ThemeToggle';
 import { BrandLogo } from '../components/atoms/BrandLogo';
-import { authService } from '../services';
+import { useThemeStore, useAuthStore } from '../stores';
 import userAvatar from '../assets/user-avatar.jpg';
 
 export interface AuthPageProps {
@@ -21,29 +21,13 @@ export const AuthPage: React.FC<AuthPageProps> = ({
   onNavigateToCourses,
   onNavigateToDashboard,
 }) => {
-  // Theme state synced with localStorage
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem('skillpop-theme');
-      if (savedTheme !== null) {
-        return savedTheme === 'dark';
-      }
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-    return false;
-  });
+  // Theme state from Zustand store
+  const isDark = useThemeStore((s) => s.isDark);
+  const toggleTheme = useThemeStore((s) => s.toggleTheme);
 
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-      document.body.classList.add('dark');
-      localStorage.setItem('skillpop-theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.body.classList.remove('dark');
-      localStorage.setItem('skillpop-theme', 'light');
-    }
-  }, [isDark]);
+  // Auth actions from Zustand store
+  const login = useAuthStore((s) => s.login);
+  const register = useAuthStore((s) => s.register);
 
   // Auth Mode State
   const [authMode, setAuthMode] = useState<AuthMode>('register');
@@ -83,29 +67,19 @@ export const AuthPage: React.FC<AuthPageProps> = ({
 
     try {
       if (authMode === 'register') {
-        const res = await authService.register({
+        const res = await register({
           fullName: fullName.trim() || 'Creator',
           email: email.trim(),
           password,
           selectedTrack,
         });
 
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('skillpop_token', res.token);
-          localStorage.setItem('skillpop_user', JSON.stringify(res.user));
-        }
-
         showToast(`🎉 Welcome to SkillPop, ${res.user.name || fullName || 'Creator'}! 7-day trial active.`);
       } else {
-        const res = await authService.login({
+        const res = await login({
           email: email.trim(),
           password,
         });
-
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('skillpop_token', res.token);
-          localStorage.setItem('skillpop_user', JSON.stringify(res.user));
-        }
 
         showToast(`🚀 Welcome back, ${res.user.name || email || 'Creator'}! Loading studio...`);
       }
@@ -158,7 +132,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
           {/* Theme Toggle */}
           <ThemeToggle
             isDark={isDark}
-            onToggle={() => setIsDark((prev) => !prev)}
+            onToggle={toggleTheme}
           />
 
           {/* Quick Help Capsule */}

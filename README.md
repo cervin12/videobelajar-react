@@ -1,17 +1,15 @@
-
-***
-
 # SkillPop (VideoBelajar 1.1)
 
 [![React](https://img.shields.io/badge/React-19.2-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-8.3-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Zustand](https://img.shields.io/badge/Zustand-5.1-brown?logo=react&logoColor=white)](https://zustand.docs.pmnd.rs/)
 [![Vitest](https://img.shields.io/badge/Vitest-5.1-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
 [![MSW](https://img.shields.io/badge/MSW-3.0-FF6A00?logo=mock-service-worker&logoColor=white)](https://mswjs.io/)
 [![CI](https://github.com/cervin12/videobelajar-react/actions/workflows/ci.yml/badge.svg)](https://github.com/cervin12/videobelajar-react/actions)
 
-> A modern, responsive creative learning and masterclass platform designed for digital artists, animators, 3D modelers, game developers, and VFX creators. Built with React 19, Vite, Tailwind CSS v4, and a fully tested mock API layer via Mock Service Worker (MSW).
+> A modern, responsive creative learning and masterclass platform designed for digital artists, animators, 3D modelers, game developers, and VFX creators. Built with React 19, Vite, Tailwind CSS v4, Zustand 5, and a fully tested mock API layer via Mock Service Worker (MSW).
 
 ---
 
@@ -24,8 +22,7 @@
 - [Getting Started](#-getting-started)
 - [Available Scripts](#-available-scripts)
 - [Testing Strategy & Test Plan](#-testing-strategy--test-plan)
-- [API & Mocking Architecture](#-api--mocking-architecture)
-- [Theme & Personalization](#-theme--personalization)
+- [State Management & API Architecture](#-state-management--api-architecture)
 - [Continuous Integration (CI/CD)](#-continuous-integration-cicd)
 - [License](#-license)
 
@@ -55,11 +52,11 @@
 - **Rich Note Creation:** Quick capture for ideas, pipeline checklists, and technical study notes.
 - **Checklist Mode:** Interactive checklists with live toggle, completed strikethrough, and item deletion.
 - **Visual Organization:** Color-coded cards, pinned note sections, and normalized tag management (`#blender`, `#shaders`).
-- **Optimistic UI with Rollback:** State updates immediately on user action and automatically rolls back if server errors occur.
+- **Optimistic UI with Rollback:** State updates immediately on user action via `useNotesStore` and automatically rolls back if server errors occur.
 - **Filter & Search:** Live search filtering titles, body text, checklists, and active tag chips.
 
 ### 4. 🔐 Dual-Mode Authentication (`AuthPage`)
-- **Sign In & Registration:** Seamless toggle between log in and register modes.
+- **Sign In & Registration:** Seamless toggle between log in and register modes powered by `useAuthStore`.
 - **Creative Track Selection:** Specialize your account track during onboarding.
 - **Validation & Security:** Client-side validation, password visibility toggle, and descriptive error banners.
 - **Simulated OAuth Providers:** One-click login simulation for Google, GitHub, Discord, and Apple.
@@ -77,6 +74,7 @@
 |---|---|---|
 | **Framework** | [React 19](https://react.dev/) | Utilizing latest React features, concurrent rendering, and strict typing |
 | **Language** | [TypeScript 6](https://www.typescriptlang.org/) | Strict type checking with comprehensive domain models |
+| **State Management** | [Zustand 5.1](https://zustand.docs.pmnd.rs/) | Lightweight global stores for Theme, Auth, and Notes with optimistic rollbacks |
 | **Bundler** | [Vite 8](https://vitejs.dev/) | Fast HMR development server and optimized Rollup/Rolldown production builds |
 | **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) | Modern utility-first CSS framework with native CSS variables and dark mode support |
 | **Icons & UI** | Material Symbols & Headless UI | Modern icon system and accessible unstyled UI primitives |
@@ -118,8 +116,13 @@ videobelajar1.1/
 │   ├── services/
 │   │   ├── api.ts                 # Unified typed API client with resilient fallbacks
 │   │   └── __tests__/             # L1 API service unit test suite
+│   ├── stores/                    # Centralized Zustand 5 stores
+│   │   ├── useThemeStore.ts       # Theme dark/light mode with DOM & localStorage sync
+│   │   ├── useAuthStore.ts        # User credentials, JWT tokens, login/register/logout
+│   │   ├── useNotesStore.ts       # Notes CRUD, optimistic updates, and rollback logic
+│   │   └── index.ts               # Barrel export
 │   ├── test/
-│   │   ├── setup.ts               # Vitest global environment & teardown setup
+│   │   ├── setup.ts               # Vitest global environment, MSW, and store reset setup
 │   │   └── setupServer.ts         # MSW Node server configuration for tests
 │   ├── types/                     # TypeScript definitions (courses, notes, student)
 │   ├── App.tsx                    # Main app shell, hash routing, floating switcher
@@ -192,15 +195,15 @@ The project follows a rigorous 4-layer testing strategy defined in [`test-plan.m
 
 ### Test Suite Summary: 94 / 94 Passing (100%)
 
-| Layer | Focus Area | File | Tests |
-|---|---|---|:---:|
-| **L1** | API Service Layer | `src/services/__tests__/api.test.ts` | 27 / 27 |
-| **L2** | Notes Management | `src/pages/__tests__/NotesPage.test.tsx` | 28 / 28 |
-| **L2** | Authentication Flow | `src/pages/__tests__/AuthPage.test.tsx` | 14 / 14 |
-| **L2** | Course Catalog & Detail | `src/pages/__tests__/CoursePage.test.tsx` | 10 / 10 |
-| **L2** | Student Dashboard | `src/pages/__tests__/StudentDashboardPage.test.tsx` | 6 / 6 |
-| **L3** | App Shell Navigation | `src/__tests__/App.test.tsx` | 5 / 5 |
-| **L4** | Shared UI Components | `src/components/__tests__/SharedComponents.test.tsx` | 4 / 4 |
+| Layer | Focus Area | File | Tests | Pass Rate |
+|---|---|---|:---:|:---:|
+| **L1** | API Service Layer | `src/services/__tests__/api.test.ts` | 27 / 27 | 100% |
+| **L2** | Notes Management | `src/pages/__tests__/NotesPage.test.tsx` | 28 / 28 | 100% |
+| **L2** | Authentication Flow | `src/pages/__tests__/AuthPage.test.tsx` | 14 / 14 | 100% |
+| **L2** | Course Catalog & Detail | `src/pages/__tests__/CoursePage.test.tsx` | 10 / 10 | 100% |
+| **L2** | Student Dashboard | `src/pages/__tests__/StudentDashboardPage.test.tsx` | 6 / 6 | 100% |
+| **L3** | App Shell Navigation | `src/__tests__/App.test.tsx` | 5 / 5 | 100% |
+| **L4** | Shared UI Components | `src/components/__tests__/SharedComponents.test.tsx` | 4 / 4 | 100% |
 
 Run the test suite at any time:
 ```bash
@@ -209,22 +212,16 @@ pnpm test:run
 
 ---
 
-## 📡 API & Mocking Architecture
+## 📡 State Management & API Architecture
 
-The application operates without requiring an external backend server. All networking is handled seamlessly via **Mock Service Worker (MSW)** and the typed client in [`src/services/api.ts`](src/services/api.ts):
+The application adopts a clean, layered architecture separating HTTP networking from application state:
 
-- **In-Memory & LocalStorage Persistence:** Notes (`skillpop-notes`) and student profiles (`skillpop_mock_student_profile`) persist across page refreshes.
-- **Fail-Safe Fallbacks:** If an API endpoint encounters a network error or returns an unexpected status code (500), the service layer automatically catches the issue, logs a clear warning, and gracefully resolves seeded fallback datasets without breaking the UI.
-- **Optimistic State Management:** Notes creation and deletion update state immediately for rapid user feedback; should the backend respond with an error, state is seamlessly rolled back.
-
----
-
-## 🌓 Theme & Personalization
-
-SkillPop comes equipped with a theme engine supporting **Dark Mode** and **Light Mode**:
-- Automatically senses user system preferences via `prefers-color-scheme`.
-- Persists theme preferences in `localStorage['skillpop-theme']`.
-- Toggled in one click from either the header, the floating navigation switcher, or the mobile drawer.
+1. **HTTP Client Layer (`src/services/api.ts`):** Direct fetch abstraction with automatic error handling, typing, and local fallback data resilience.
+2. **Store Layer (`src/stores/` via Zustand 5):**
+   - **`useThemeStore`:** Eliminates theme prop-drilling across all views and syncs with `localStorage['skillpop-theme']`.
+   - **`useAuthStore`:** Manages user session, JWT token lifecycle, and login/register/logout actions.
+   - **`useNotesStore`:** Manages note collections, search queries, active tags, and executes optimistic updates with automatic rollback on network failure (HTTP 500).
+3. **Mock Server Layer (`src/mocks/` via MSW):** Intercepts network calls seamlessly in both unit tests and development browser sessions.
 
 ---
 
@@ -242,5 +239,3 @@ Every push and pull request to `main` triggers our GitHub Actions pipeline ([`.g
 ## 📄 License
 
 This project is open-source and available under the [MIT License](LICENSE).
-
-***

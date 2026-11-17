@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useThemeStore } from '../stores/useThemeStore';
 import { RevealOnScroll, BrandLogo } from '../components/atoms';
 import { ThemeToggle } from '../components/molecules';
 
@@ -37,33 +38,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   onNavigateToNotes,
   onNavigateToAuth,
 }) => {
-  // Theme state
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem('skillpop-theme') || localStorage.getItem('theme');
-      if (savedTheme !== null) {
-        return savedTheme === 'dark';
-      }
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-    return false;
-  });
-
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-      document.body.classList.add('dark');
-      localStorage.setItem('skillpop-theme', 'dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.body.classList.remove('dark');
-      localStorage.setItem('skillpop-theme', 'light');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [isDark]);
-
-  const toggleTheme = () => setIsDark((prev) => !prev);
+  // Theme state from Zustand store
+  const isDark = useThemeStore((s) => s.isDark);
+  const toggleTheme = useThemeStore((s) => s.toggleTheme);
 
   // Search input state
   const [searchQuery, setSearchQuery] = useState('');

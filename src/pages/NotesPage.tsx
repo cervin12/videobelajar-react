@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useThemeStore, useAuthStore, useNotesStore } from '../stores';
 import { Header } from '../components/organisms/Header';
 import { Sidebar } from '../components/organisms/Sidebar';
 import { Footer } from '../components/organisms/Footer';
 import { RevealOnScroll, Skeleton } from '../components/atoms';
 import type { Note, NoteColor, NoteChecklistItem } from '../types/notes';
 import type { StudentProfile } from '../types/studentDashboard';
-import { notesService, studentService, authService } from '../services';
+import { studentService } from '../services';
 import { studentProfileData as defaultProfile } from '../data/studentDashboardData';
 
 export interface NotesPageProps {
@@ -33,61 +34,46 @@ export const NotesPage: React.FC<NotesPageProps> = ({
   onNavigateToDashboard,
   onNavigateToAuth,
 }) => {
-  // Theme state
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem('skillpop-theme');
-      if (savedTheme !== null) {
-        return savedTheme === 'dark';
-      }
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-    return false;
-  });
+  // Theme & Auth state from Zustand store
+  const isDark = useThemeStore((s) => s.isDark);
+  const toggleTheme = useThemeStore((s) => s.toggleTheme);
+  const logout = useAuthStore((s) => s.logout);
 
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-      document.body.classList.add('dark');
-      localStorage.setItem('skillpop-theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.body.classList.remove('dark');
-      localStorage.setItem('skillpop-theme', 'light');
-    }
-  }, [isDark]);
-
-  const toggleTheme = () => setIsDark((prev) => !prev);
+  // Notes state & actions from Zustand store
+  const notes = useNotesStore((s) => s.notes);
+  const loading = useNotesStore((s) => s.loading);
+  const searchQuery = useNotesStore((s) => s.searchQuery);
+  const setSearchQuery = useNotesStore((s) => s.setSearchQuery);
+  const selectedTag = useNotesStore((s) => s.selectedTag);
+  const setSelectedTag = useNotesStore((s) => s.setSelectedTag);
+  const fetchNotes = useNotesStore((s) => s.fetchNotes);
+  const createNoteAction = useNotesStore((s) => s.createNote);
+  const deleteNoteAction = useNotesStore((s) => s.deleteNote);
+  const togglePinAction = useNotesStore((s) => s.togglePin);
+  const toggleCheckboxAction = useNotesStore((s) => s.toggleCheckbox);
+  const updateNoteAction = useNotesStore((s) => s.updateNote);
 
   // Layout & Sidebar
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedTag, setSelectedTag] = useState<string>('all');
 
   // Student profile state seeded via studentService
   const [profile, setProfile] = useState<StudentProfile>(defaultProfile);
-
-  // Notes state & loading seeded via notesService
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
 
   // Fetch initial notes and user profile from MSW-backed services
   useEffect(() => {
     let isMounted = true;
     Promise.all([
-      notesService.getNotes().catch(() => []),
+      fetchNotes(),
       studentService.getProfile().catch(() => defaultProfile),
-    ]).then(([fetchedNotes, fetchedProfile]) => {
+    ]).then(([, fetchedProfile]) => {
       if (isMounted) {
-        setNotes(fetchedNotes);
         if (fetchedProfile) setProfile(fetchedProfile);
-        setLoading(false);
       }
     });
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [fetchNotes]);
 
   // Toast notifications
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -103,7 +89,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({
   };
 
   const handleLogout = async () => {
-    await authService.logout();
+    await logout();
     showToast('👋 Signed out of Creator Lab. See you soon!');
     if (onNavigateToAuth) onNavigateToAuth();
   };
@@ -204,8 +190,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({
 
     setSaveStatus('Saving to mock server...');
     try {
-      const createdNote = await notesService.createNote(payload);
-      setNotes((prev) => [createdNote, ...prev]);
+      const createdNote = await createNoteAction(payload);
       setSaveStatus('Saved just now');
       setTimeout(() => setSaveStatus(''), 2500);
 
@@ -224,65 +209,37 @@ export const NotesPage: React.FC<NotesPageProps> = ({
     }
   };
 
-  // Delete note via notesService
+  // Delete note via notes store
   const handleDeleteNote = async (id: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     const noteToDelete = notes.find((n) => n.id === id);
-    setNotes((prev) => prev.filter((n) => n.id !== id));
     showToast(`🗑️ Note "${noteToDelete?.title || 'Note'}" deleted.`);
 
     try {
-      await notesService.deleteNote(id);
+      await deleteNoteAction(id);
     } catch (err) {
       console.error('Failed to delete note:', err);
-      if (noteToDelete) {
-        setNotes((prev) => [noteToDelete, ...prev]);
-        showToast('❌ Failed to delete note on server.');
-      }
+      showToast('❌ Failed to delete note on server.');
     }
   };
 
-  // Toggle pin via notesService
+  // Toggle pin via notes store
   const handleTogglePin = async (id: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     const target = notes.find((n) => n.id === id);
     if (!target) return;
     const nextPinned = !target.pinned;
-
-    setNotes((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, pinned: nextPinned } : n))
-    );
     showToast(nextPinned ? '📌 Note pinned to top!' : '📌 Note unpinned.');
-
-    try {
-      await notesService.updateNote(id, { pinned: nextPinned });
-    } catch (err) {
-      console.error('Failed to update note pin status:', err);
-    }
+    await togglePinAction(id);
   };
 
-  // Toggle checklist checkbox via notesService
+  // Toggle checklist checkbox via notes store
   const handleToggleCheckbox = async (noteId: string, checkId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    const target = notes.find((n) => n.id === noteId);
-    if (!target || !target.checklist) return;
-
-    const nextChecklist = target.checklist.map((item) =>
-      item.id === checkId ? { ...item, completed: !item.completed } : item
-    );
-
-    setNotes((prev) =>
-      prev.map((n) => (n.id === noteId ? { ...n, checklist: nextChecklist } : n))
-    );
-
-    try {
-      await notesService.updateNote(noteId, { checklist: nextChecklist });
-    } catch (err) {
-      console.error('Failed to update checklist item:', err);
-    }
+    await toggleCheckboxAction(noteId, checkId);
   };
 
-  // Save edited note via notesService
+  // Save edited note via notes store
   const handleUpdateNote = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingNote) return;
@@ -295,29 +252,20 @@ export const NotesPage: React.FC<NotesPageProps> = ({
       .map((t) => (t.startsWith('#') ? t : `#${t}`));
     const parsedModalTags = Array.from(new Set(rawModalTags));
 
-    const previousNote = notes.find((n) => n.id === editingNote.id);
     const updatedData: Note = {
       ...editingNote,
       tags: parsedModalTags.length > 0 ? parsedModalTags : ['#StudyNotes'],
       createdAt: 'Updated just now',
     };
 
-    setNotes((prev) =>
-      prev.map((n) => (n.id === editingNote.id ? updatedData : n))
-    );
     showToast(`✅ Note "${editingNote.title}" updated.`);
     const noteId = editingNote.id;
     setEditingNote(null);
 
     try {
-      await notesService.updateNote(noteId, updatedData);
+      await updateNoteAction(noteId, updatedData);
     } catch (err) {
       console.error('Failed to update note:', err);
-      if (previousNote) {
-        setNotes((prev) =>
-          prev.map((n) => (n.id === noteId ? previousNote : n))
-        );
-      }
       showToast('❌ Failed to update note on server.');
     }
   };

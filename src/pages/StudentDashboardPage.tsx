@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useThemeStore, useAuthStore } from '../stores';
 import { Header } from '../components/organisms/Header';
 import { Sidebar } from '../components/organisms/Sidebar';
 import { Footer } from '../components/organisms/Footer';
 import { RevealOnScroll, Skeleton } from '../components/atoms';
 import type { StudentProfile } from '../types/studentDashboard';
-import { studentService, authService } from '../services';
+import { studentService } from '../services';
 import {
   studentProfileData,
   activeCoursesData,
@@ -30,31 +31,10 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
   onNavigateToAuth,
   onNavigateToNotes,
 }) => {
-  // 1. Theme State (matches CoursePage logic)
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem('skillpop-theme');
-      if (savedTheme !== null) {
-        return savedTheme === 'dark';
-      }
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-    return false;
-  });
-
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-      document.body.classList.add('dark');
-      localStorage.setItem('skillpop-theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.body.classList.remove('dark');
-      localStorage.setItem('skillpop-theme', 'light');
-    }
-  }, [isDark]);
-
-  const toggleTheme = () => setIsDark((prev) => !prev);
+  // 1. Theme & Auth State from Zustand store
+  const isDark = useThemeStore((s) => s.isDark);
+  const toggleTheme = useThemeStore((s) => s.toggleTheme);
+  const logout = useAuthStore((s) => s.logout);
 
   // 2. Search state for Header
   const [searchQuery, setSearchQuery] = useState('');
@@ -115,7 +95,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
   }, []);
 
   const handleLogout = async () => {
-    await authService.logout();
+    await logout();
     showToast('👋 Signed out of Creator Lab. See you soon!');
     if (onNavigateToAuth) onNavigateToAuth();
   };

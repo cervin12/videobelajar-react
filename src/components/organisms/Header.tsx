@@ -3,12 +3,13 @@ import { ThemeToggle } from '../molecules/ThemeToggle';
 import { Icon } from '../atoms/Icon';
 import { BrandLogo } from '../atoms/BrandLogo';
 import userAvatar from '../../assets/user-avatar.jpg';
+import { useThemeStore } from '../../stores/useThemeStore';
 
 export type NavTab = 'courses' | 'challenges' | 'community' | 'mentors';
 
 export interface HeaderProps {
-  isDark: boolean;
-  onToggleTheme: () => void;
+  isDark?: boolean;
+  onToggleTheme?: () => void;
   searchQuery: string;
   onSearchChange: (q: string) => void;
   onNavigateToAuth?: () => void;
@@ -43,8 +44,8 @@ const navItems: NavItem[] = [
 export const Header: React.FC<HeaderProps> = ({
   isDark,
   onToggleTheme,
-  searchQuery,
-  onSearchChange,
+  searchQuery = '',
+  onSearchChange = () => {},
   onNavigateToAuth,
   onNavigateToDashboard,
   onProfileClick,
@@ -57,6 +58,11 @@ export const Header: React.FC<HeaderProps> = ({
   level = 'Lvl 6',
   showNavList = true,
 }) => {
+  const storeIsDark = useThemeStore((s) => s.isDark);
+  const storeToggleTheme = useThemeStore((s) => s.toggleTheme);
+  const effectiveIsDark = isDark !== undefined ? isDark : storeIsDark;
+  const effectiveToggleTheme = onToggleTheme || storeToggleTheme;
+
   const [scrollProgress, setScrollProgress] = useState(0);
   const searchInputRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -246,7 +252,7 @@ export const Header: React.FC<HeaderProps> = ({
           )}
 
           {/* Theme Toggle */}
-          <ThemeToggle isDark={isDark} onToggle={onToggleTheme} />
+          <ThemeToggle isDark={effectiveIsDark} onToggle={effectiveToggleTheme} />
 
           {/* Notification Button */}
           <button
